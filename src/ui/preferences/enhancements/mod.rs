@@ -14,7 +14,7 @@ use anime_launcher_sdk::config::schema_blanks::prelude::*;
 
 use anime_launcher_sdk::anime_game_core::installer::downloader::Downloader;
 
-use anime_launcher_sdk::discord_rpc::DiscordRpc;
+//use anime_launcher_sdk::discord_rpc::DiscordRpc;
 use anime_launcher_sdk::is_available;
 
 use enum_ordinalize::Ordinalize;
@@ -67,10 +67,11 @@ impl AsyncFactoryComponent for DiscordRpcIcon {
 
             set_activatable: true,
 
+            /*
             connect_activated[sender, index] => move |_| {
                 sender.output(EnhancementsAppMsg::SetDiscordRpcIcon(index.clone()))
                     .unwrap();
-            }
+            }*/
         }
     }
 
@@ -97,7 +98,7 @@ pub struct EnhancementsApp {
 pub enum EnhancementsAppMsg {
     SetGamescopeParent,
 
-    SetDiscordRpcIcon(DynamicIndex),
+    //SetDiscordRpcIcon(DynamicIndex),
 
     OpenGamescope,
     OpenMainPage,
@@ -468,8 +469,9 @@ impl SimpleAsyncComponent for EnhancementsApp {
                         }
                     }
                 }
-            },
+            }
 
+            /*
             add = &adw::PreferencesGroup {
                 set_title: &tr!("discord-rpc"),
 
@@ -492,8 +494,6 @@ impl SimpleAsyncComponent for EnhancementsApp {
                         }
                     }
                 }
-
-                /*
                 ,
                 #[local_ref]
                 discord_rpc_icons -> adw::ExpanderRow {
@@ -528,8 +528,9 @@ impl SimpleAsyncComponent for EnhancementsApp {
                             }
                         }
                     }
-                }*/
+                }
             }
+            */
         },
 
         #[local_ref]
@@ -566,6 +567,7 @@ impl SimpleAsyncComponent for EnhancementsApp {
                 .forward(sender.input_sender(), std::convert::identity)
         };
 
+        /*
         match DiscordRpc::get_assets(CONFIG.launcher.discord_rpc.app_id) {
             Ok(icons) => {
                 for icon in icons {
@@ -632,6 +634,7 @@ impl SimpleAsyncComponent for EnhancementsApp {
                 description: Some(err.to_string())
             })
         }
+        */
 
         let discord_rpc_icons = model.discord_rpc_icons.widget();
 
@@ -649,6 +652,7 @@ impl SimpleAsyncComponent for EnhancementsApp {
                 self.gamescope.widget().set_transient_for(super::main::PREFERENCES_WINDOW.as_ref());
             }
 
+            /*
             EnhancementsAppMsg::SetDiscordRpcIcon(index) => {
                 if let Some(icon) = self.discord_rpc_icons.guard().get(index.current_index()) {
                     if let Ok(mut config) = Config::get() {
@@ -660,6 +664,7 @@ impl SimpleAsyncComponent for EnhancementsApp {
                     }
                 }
             }
+            */
 
             EnhancementsAppMsg::OpenGamescope => {
                 self.gamescope.widget().present();

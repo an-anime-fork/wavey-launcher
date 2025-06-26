@@ -269,7 +269,7 @@ impl SimpleAsyncComponent for GeneralApp {
                             Some(diff) => match diff {
                                 VersionDiff::Latest { .. } => String::new(),
 
-                                VersionDiff::Outdated { latest, ..} => tr!("game-outdated", {
+                                VersionDiff::Outdated { latest, .. } => tr!("game-outdated", {
                                     "latest" = latest.to_string()
                                 }),
 

@@ -14,7 +14,6 @@ mod repair_game;
 mod download_wine;
 mod create_prefix;
 mod download_diff;
-mod install_vcrun2015;
 mod disable_telemetry;
 mod launch;
 
@@ -309,15 +308,14 @@ impl SimpleComponent for App {
                                                 // Some(LauncherState::PatchNotInstalled) |
                                                 // Some(LauncherState::PatchUpdateAvailable) => "document-save-symbolic",
 
-                                                Some(LauncherState::Vcrun2015NotInstalled) => "document-save-symbolic",
 
-                                                Some(LauncherState::TelemetryNotDisabled) => "security-high-symbolic",
+                                                //Some(LauncherState::TelemetryNotDisabled) => "security-high-symbolic",
 
                                                 Some(LauncherState::WineNotInstalled) |
                                                 Some(LauncherState::PrefixNotExists) => "document-save-symbolic",
 
-                                                Some(LauncherState::GameUpdateAvailable(_)) |
-                                                Some(LauncherState::GameNotInstalled(_)) => "document-save-symbolic",
+                                                //Some(LauncherState::GameUpdateAvailable(_)) |
+                                                //Some(LauncherState::GameNotInstalled(_)) => "document-save-symbolic",
 
                                                 // Some(LauncherState::PatchBroken) |
                                                 // Some(LauncherState::PatchUnsafe) |
@@ -337,14 +335,14 @@ impl SimpleComponent for App {
                                                 // Some(LauncherState::PatchUnsafe) => tr!("patch-unsafe"),
 
                                                 // TODO: wouldn't hurt to translate right?
-                                                Some(LauncherState::Vcrun2015NotInstalled) => String::from("Install vcrun2015"),
+                                                //Some(LauncherState::Vcrun2015NotInstalled) => String::from("Install vcrun2015"),
 
-                                                Some(LauncherState::TelemetryNotDisabled) => tr!("disable-telemetry"),
+                                                //Some(LauncherState::TelemetryNotDisabled) => tr!("disable-telemetry"),
 
                                                 Some(LauncherState::WineNotInstalled) => tr!("download-wine"),
                                                 Some(LauncherState::PrefixNotExists)  => tr!("create-prefix"),
 
-                                                Some(LauncherState::GameUpdateAvailable(diff)) => {
+                                                /*Some(LauncherState::GameUpdateAvailable(diff)) => {
                                                     match (Config::get(), diff.file_name()) {
                                                         (Ok(config), Some(filename)) => {
                                                             let temp = config.launcher.temp.unwrap_or_else(std::env::temp_dir);
@@ -360,9 +358,9 @@ impl SimpleComponent for App {
 
                                                         _ => tr!("update")
                                                     }
-                                                },
+                                                },*/
 
-                                                Some(LauncherState::GameNotInstalled(_)) => tr!("download"),
+                                                //Some(LauncherState::GameNotInstalled(_)) => tr!("download"),
 
                                                 None => String::from("...")
                                             }
@@ -842,10 +840,12 @@ impl SimpleComponent for App {
 
                 if let Some(state) = state {
                     match state {
+                        /*
                         LauncherState::GameUpdateAvailable(_) |
                         LauncherState::GameNotInstalled(_) if perform_on_download_needed => {
                             sender.input(AppMsg::PerformAction);
                         }
+                        */
 
                         _ => ()
                     }
@@ -905,16 +905,16 @@ impl SimpleComponent for App {
                     // LauncherState::PatchNotInstalled |
                     // LauncherState::PatchUpdateAvailable => update_patch::update_patch(sender, self.progress_bar.sender().to_owned()),
 
-                    LauncherState::Vcrun2015NotInstalled => install_vcrun2015::install_vcrun2015(sender),
+                    //LauncherState::Vcrun2015NotInstalled => install_vcrun2015::install_vcrun2015(sender),
 
-                    LauncherState::TelemetryNotDisabled => disable_telemetry::disable_telemetry(sender),
+                    //LauncherState::TelemetryNotDisabled => disable_telemetry::disable_telemetry(sender),
 
                     LauncherState::WineNotInstalled => download_wine::download_wine(sender, self.progress_bar.sender().to_owned()),
                     LauncherState::PrefixNotExists => create_prefix::create_prefix(sender),
 
-                    LauncherState::GameUpdateAvailable(diff) |
-                    LauncherState::GameNotInstalled(diff)  =>
-                        download_diff::download_diff(sender, self.progress_bar.sender().to_owned(), diff.to_owned())
+                    //LauncherState::GameUpdateAvailable(diff) |
+                    //LauncherState::GameNotInstalled(diff)  =>
+                    //    download_diff::download_diff(sender, self.progress_bar.sender().to_owned(), diff.to_owned())
                 }
             }
 

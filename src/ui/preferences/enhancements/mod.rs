@@ -611,9 +611,11 @@ impl SimpleAsyncComponent for EnhancementsApp {
 
                         check_button.set_group(Some(&model.discord_rpc_root_check_button));
 
+                        /*
                         if CONFIG.launcher.discord_rpc.icon == icon.name {
                             check_button.set_active(true);
                         }
+                        */
 
                         model.discord_rpc_icons.guard().push_back(DiscordRpcIcon {
                             check_button,

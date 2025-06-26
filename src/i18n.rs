@@ -1,3 +1,4 @@
+use std::sync::OnceLock;
 use unic_langid::{langid, LanguageIdentifier};
 
 fluent_templates::static_loader! {
@@ -32,14 +33,15 @@ pub const SUPPORTED_LANGUAGES: &[LanguageIdentifier] = &[
     langid!("cs-cz")
 ];
 
-pub static mut LANG: LanguageIdentifier = langid!("en-us");
+/// Fallback used if the system language is not supported
+static FALLBACK: LanguageIdentifier = langid!("en-us");
+
+pub static LANG: OnceLock<LanguageIdentifier> = OnceLock::new();
 
 /// Set launcher language
 pub fn set_lang(lang: LanguageIdentifier) -> anyhow::Result<()> {
     if SUPPORTED_LANGUAGES.iter().any(|item| item.language == lang.language) {
-        unsafe {
-            LANG = lang
-        }
+        LANG.set(lang).expect("Can't overwrite language!");
 
         Ok(())
     }
@@ -50,30 +52,30 @@ pub fn set_lang(lang: LanguageIdentifier) -> anyhow::Result<()> {
 }
 
 /// Get launcher language
-pub fn get_lang() -> LanguageIdentifier {
-    unsafe { LANG.clone() }
+pub fn get_lang() -> &'static LanguageIdentifier {
+    LANG.get().expect("Language hasn't been initialized!")
 }
 
 /// Get system language or default language if system one is not supported
-/// 
+///
 /// Checks env variables in following order:
 /// - `LC_ALL`
 /// - `LC_MESSAGES`
 /// - `LANG`
-pub fn get_default_lang() -> LanguageIdentifier {
+pub fn get_default_lang() -> &'static LanguageIdentifier {
     let current = std::env::var("LC_ALL")
         .unwrap_or_else(|_| std::env::var("LC_MESSAGES")
-        .unwrap_or_else(|_| std::env::var("LANG")
-        .unwrap_or_else(|_| String::from("en_us"))))
+            .unwrap_or_else(|_| std::env::var("LANG")
+                .unwrap_or_else(|_| String::from("en_us"))))
         .to_ascii_lowercase();
 
     for lang in SUPPORTED_LANGUAGES {
         if current.starts_with(lang.language.as_str()) {
-            return lang.clone();
+            return lang;
         }
     }
 
-    get_lang()
+    &FALLBACK
 }
 
 pub fn format_lang(lang: &LanguageIdentifier) -> String {
@@ -85,17 +87,17 @@ pub fn format_lang(lang: &LanguageIdentifier) -> String {
 
 #[macro_export]
 /// Get translated message by key, with optional translation parameters
-/// 
+///
 /// # Examples:
-/// 
+///
 /// Without parameters:
-/// 
+///
 /// ```no_run
 /// println!("Translated message: {}", tr!("launch"));
 /// ```
-/// 
+///
 /// With parameters:
-/// 
+///
 /// ```no_run
 /// println!("Translated message: {}", tr!("game-outdated", {
 ///     "latest" = "3.3.0"
@@ -106,16 +108,13 @@ macro_rules! tr {
         {
             use fluent_templates::Loader;
 
-            #[allow(unused_unsafe)]
-            $crate::i18n::LOCALES.lookup(unsafe { $crate::i18n::LANG.as_ref() }, $id)
+            $crate::i18n::LOCALES.lookup($crate::i18n::get_lang(), $id)
         }
     };
 
     ($id:expr, { $($key:literal = $value:expr),* }) => {
         {
             use std::collections::HashMap;
-
-            use fluent_templates::Loader;
             use fluent_templates::fluent_bundle::FluentValue;
 
             let mut args = HashMap::new();
@@ -124,8 +123,8 @@ macro_rules! tr {
                 args.insert($key, FluentValue::from($value));
             )*
 
-            #[allow(unused_unsafe)]
-            $crate::i18n::LOCALES.lookup_complete(unsafe { $crate::i18n::LANG.as_ref() }, $id, Some(&args))
+            $crate::i18n::LOCALES.lookup_no_default_fallback($crate::i18n::get_lang(), $id, Some(&args))
+                .unwrap_or_default()
         }
     };
 }

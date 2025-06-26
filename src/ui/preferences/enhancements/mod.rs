@@ -491,8 +491,10 @@ impl SimpleAsyncComponent for EnhancementsApp {
                             }
                         }
                     }
-                },
+                }
 
+                /*
+                ,
                 #[local_ref]
                 discord_rpc_icons -> adw::ExpanderRow {
                     set_title: &tr!("icon")
@@ -526,7 +528,7 @@ impl SimpleAsyncComponent for EnhancementsApp {
                             }
                         }
                     }
-                }
+                }*/
             }
         },
 

@@ -1,5 +1,5 @@
 custom = Personalisé
-none = Auccun
+none = Aucun
 default = Par défaut
 details = Détails
 options = Options

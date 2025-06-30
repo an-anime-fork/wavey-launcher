@@ -1,5 +1,5 @@
 components = 组件
-components-description = 管理 Wine 和 DXVK 版本
+components-description = 管理 Proton 版本
 
 selected-version = 选择版本
 recommended-only = 仅显示推荐版本

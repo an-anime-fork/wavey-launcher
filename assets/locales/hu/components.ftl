@@ -1,5 +1,5 @@
 components = Komponensek
-components-description = A Wine és DXVK verzióid beállításai
+components-description = A Proton verzióid beállításai
 
 selected-version = Kiválasztott verzió
 recommended-only = Csak ajánlott

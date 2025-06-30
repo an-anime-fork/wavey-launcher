@@ -1,5 +1,5 @@
 components = Komponenty
-components-description = Spravovat verze Wine a DXVK
+components-description = Spravovat verze Proton
 
 selected-version = Současně používaná verze
 recommended-only = Pouze doporučené

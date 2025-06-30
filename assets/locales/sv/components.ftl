@@ -1,5 +1,5 @@
 components = Komponenter
-components-description = Hantera dina versioner av Wine och DXVK
+components-description = Hantera dina versioner av Proton
 
 selected-version = Valda versioner
 recommended-only = Endast rekommenderade

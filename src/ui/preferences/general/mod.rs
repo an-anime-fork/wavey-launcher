@@ -188,6 +188,7 @@ impl SimpleAsyncComponent for GeneralApp {
                     }
                 },
 
+                /*
                 adw::ComboRow {
                     set_title: &tr!("game-edition"),
 
@@ -213,7 +214,9 @@ impl SimpleAsyncComponent for GeneralApp {
                         }
                     }
                 },
+                */
 
+                /*
                 gtk::Box {
                     set_orientation: gtk::Orientation::Horizontal,
                     set_spacing: 8,
@@ -232,8 +235,10 @@ impl SimpleAsyncComponent for GeneralApp {
                         connect_clicked => GeneralAppMsg::RepairGame
                     }
                 }
+                */
             },
 
+            /*
             add = &adw::PreferencesGroup {
                 set_title: &tr!("status"),
 
@@ -320,7 +325,7 @@ impl SimpleAsyncComponent for GeneralApp {
                 //         })
                 //     }
                 // }
-            },
+            },*/
 
             add = &adw::PreferencesGroup {
                 set_title: &tr!("options"),
@@ -371,6 +376,7 @@ impl SimpleAsyncComponent for GeneralApp {
                     connect_activated => GeneralAppMsg::OpenComponentsPage
                 },
 
+                /*
                 adw::ExpanderRow {
                     set_title: &tr!("wine-tools"),
 
@@ -427,7 +433,7 @@ impl SimpleAsyncComponent for GeneralApp {
 
                         connect_activated => GeneralAppMsg::WineOpen(&["start", "winedbg"])
                     }
-                }
+                }*/
             }
         },
 

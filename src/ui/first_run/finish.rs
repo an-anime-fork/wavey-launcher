@@ -78,12 +78,21 @@ impl SimpleAsyncComponent for FinishApp {
     async fn update(&mut self, msg: Self::Input, _sender: AsyncComponentSender<Self>) {
         match msg {
             FinishAppMsg::Restart => {
+                if FIRST_RUN_FILE.exists() {
+                    let _ = std::fs::remove_file(FIRST_RUN_FILE.as_path());
+                }
+    
                 std::process::Command::new(std::env::current_exe().unwrap()).spawn().unwrap();
 
                 relm4::main_application().quit();
             }
 
-            FinishAppMsg::Exit => relm4::main_application().quit()
+            FinishAppMsg::Exit => {
+                if FIRST_RUN_FILE.exists() {
+                    let _ = std::fs::remove_file(FIRST_RUN_FILE.as_path());
+                }
+                relm4::main_application().quit()
+            }
         }
     }
 }

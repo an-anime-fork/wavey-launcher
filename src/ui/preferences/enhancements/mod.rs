@@ -126,6 +126,7 @@ impl SimpleAsyncComponent for EnhancementsApp {
             add = &adw::PreferencesGroup {
                 set_title: &tr!("options"),
 
+                /*
                 adw::ActionRow {
                     set_title: &tr!("sandbox"),
                     set_subtitle: &tr!("sandbox-settings-description"),
@@ -137,7 +138,7 @@ impl SimpleAsyncComponent for EnhancementsApp {
                     set_activatable: true,
 
                     connect_activated => EnhancementsAppMsg::OpenSandboxSettingsPage
-                },
+                },*/
 
                 adw::ActionRow {
                     set_title: &tr!("environment"),
@@ -374,6 +375,7 @@ impl SimpleAsyncComponent for EnhancementsApp {
                     }
                 },
 
+                /*
                 adw::ComboRow {
                     set_title: &tr!("fsr"),
                     set_subtitle: &tr!("fsr-description"),
@@ -413,7 +415,7 @@ impl SimpleAsyncComponent for EnhancementsApp {
                             }
                         }
                     }
-                },
+                },*/
 
                 adw::ActionRow {
                     set_title: &tr!("gamemode"),

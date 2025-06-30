@@ -93,9 +93,9 @@ impl SimpleComponent for FirstRunApp {
                         set_allow_scroll_wheel: false,
 
                         append = model.welcome.widget(),
-                        append = model.dependencies.widget(),
-                        append = model.default_paths.widget(),
-                        append = model.download_components.widget(),
+                        //append = model.dependencies.widget(),
+                        //append = model.default_paths.widget(),
+                        //append = model.download_components.widget(),
                         append = model.finish.widget(),
                     },
 

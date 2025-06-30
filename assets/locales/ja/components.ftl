@@ -1,5 +1,5 @@
 components = コンポーネント 
-components-description = WineとDXVKのバージョンを管理する。
+components-description = Protonのバージョンを管理する。
 
 selected-version = バージョン選択
 recommended-only = 推奨版のみを使う。

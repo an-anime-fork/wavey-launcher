@@ -1,5 +1,5 @@
 components = Bileşenler
-components-description = Wine ve DXVK sürümlerini yönet
+components-description = Proton sürümlerini yönet
 
 selected-version = Seçilmiş versiyon
 recommended-only = Sadece önerilenler

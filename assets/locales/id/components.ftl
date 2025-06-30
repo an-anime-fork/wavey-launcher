@@ -1,5 +1,5 @@
 components = Komponen
-components-description = Atur versi Wine dan DXVK
+components-description = Atur versi Proton
 
 selected-version = Versi yang dipilih
 recommended-only = Hanya yang direkomendasikan

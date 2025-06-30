@@ -1,5 +1,5 @@
 components = Composants
-components-description = Sélection des versions de Wine et de DXVK
+components-description = Sélection des versions de Proton
 
 selected-version = Version sélectionnée
 recommended-only = Versions recommandées uniquement

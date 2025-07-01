@@ -1,4 +1,5 @@
 use std::path::PathBuf;
+use std::process::exit;
 use std::sync::atomic::{AtomicBool, Ordering};
 
 use anime_launcher_sdk::integrations::steam;
@@ -211,6 +212,11 @@ fn main() -> anyhow::Result<()> {
     gtk::glib::set_program_name(Some(&tr!("application-name")));
 
     //while !DEBUG_HALTER.exists() { /* noop */ }
+
+    // Quirk: early detection of Steam Environment
+    if steam::is_in_steam_startup_phase() {
+        exit(0);
+    }
 
     // Run FirstRun window if .first-run file persist
     if FIRST_RUN_FILE.exists() && !steam::is_install_managed_by_steam() {

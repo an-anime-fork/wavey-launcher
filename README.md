@@ -5,7 +5,7 @@
 
 <p align="center">
     <a href="https://discord.gg/ck37X6UWBp">Discord</a> ·
-    <a href="https://github.com/an-anime-team/wavey-launcher/wiki">Wiki</a>
+    <a href="https://github.com/an-anime-fork/wavey-launcher/wiki">Wiki</a>
 </p>
 
 <br>
@@ -23,8 +23,8 @@ Repository will be archived until proper solution is found.
 
 * Original patch project without which this project wouldn't be possible. Link is omitted for "privacy" purposes
 * [macOS launcher](https://github.com/3Shain/yet-another-anime-game-launcher) which contains some additional compatibility components
-* [Wiki](https://github.com/an-anime-team/wavey-launcher/wiki) contains some basic FAQ, installation instructions and more
-* [Releases page](https://github.com/an-anime-team/wavey-launcher/releases) where you can find latest available version
+* [Wiki](https://github.com/an-anime-fork/wavey-launcher/wiki) contains some basic FAQ, installation instructions and more
+* [Releases page](https://github.com/an-anime-fork/wavey-launcher/releases) where you can find latest available version
 * [Changelog](CHANGELOG.md) with chronology of the project
 
 <br>
@@ -33,15 +33,15 @@ Repository will be archived until proper solution is found.
 
 | Distribution | Format | Wiki | Source |
 | - | - | - | - |
-| Any | Flatpak | [link](https://github.com/an-anime-team/wavey-launcher/wiki/Installation#-any-distribution-flatpak) | - |
-| Arch Linux, Manjaro | AUR | [link](https://github.com/an-anime-team/wavey-launcher/wiki/Installation#-arch-linux-aur) | [wavey-launcher-bin](https://aur.archlinux.org/packages/wavey-launcher-bin) |
-| Fedora, OpenSUSE | RPM | [link](https://github.com/an-anime-team/wavey-launcher/wiki/Installation#-fedora-rpm) | [HRL](https://build.opensuse.org/repositories/home:Maroxy:AAT-Apps/HRL) |
-| Gentoo | ebuild | [link](https://github.com/an-anime-team/wavey-launcher/wiki/Installation#-gentoo-linux-ebuild) | [gentoo-ebuilds](https://github.com/an-anime-team/gentoo-ebuilds) |
-| NixOS | nixpkg | [link](https://github.com/an-anime-team/wavey-launcher/wiki/Installation#-nixos-nixpkg) | [aagl-gtk-on-nix](https://github.com/ezKEa/aagl-gtk-on-nix) |
+| Any | Flatpak | [link](https://github.com/an-anime-fork/wavey-launcher/wiki/Installation#-any-distribution-flatpak) | - |
+| Arch Linux, Manjaro | AUR | [link](https://github.com/an-anime-fork/wavey-launcher/wiki/Installation#-arch-linux-aur) | [wavey-launcher-bin](https://aur.archlinux.org/packages/wavey-launcher-bin) |
+| Fedora, OpenSUSE | RPM | [link](https://github.com/an-anime-fork/wavey-launcher/wiki/Installation#-fedora-rpm) | [HRL](https://build.opensuse.org/repositories/home:Maroxy:AAT-Apps/HRL) |
+| Gentoo | ebuild | [link](https://github.com/an-anime-fork/wavey-launcher/wiki/Installation#-gentoo-linux-ebuild) | [gentoo-ebuilds](https://github.com/an-anime-fork/gentoo-ebuilds) |
+| NixOS | nixpkg | [link](https://github.com/an-anime-fork/wavey-launcher/wiki/Installation#-nixos-nixpkg) | [aagl-gtk-on-nix](https://github.com/ezKEa/aagl-gtk-on-nix) |
 
-To see the installation guides, please visit the wiki page [here](https://github.com/an-anime-team/wavey-launcher/wiki/Installation)
+To see the installation guides, please visit the wiki page [here](https://github.com/an-anime-fork/wavey-launcher/wiki/Installation)
 
-Lutris integration described [here](https://github.com/an-anime-team/wavey-launcher/wiki/Installation#-lutris)
+Lutris integration described [here](https://github.com/an-anime-fork/wavey-launcher/wiki/Installation#-lutris)
 
 ## Chinese version support
 
@@ -61,7 +61,7 @@ This should be automatically enabled if you're using zh_cn (Chinese) as your sys
 ## Clone repo
 
 ```sh
-git clone --recursive https://github.com/an-anime-team/wavey-launcher
+git clone --recursive https://github.com/an-anime-fork/wavey-launcher
 ```
 
 ## Run app
@@ -78,6 +78,6 @@ cargo build --release
 
 ## Updates strategy
 
-Starting from 3.2.1 ([fcab428](https://github.com/an-anime-team/wavey-launcher/commit/fcab428cb40b1457f41e0856f9d1e1473acbe653)) we have 2 branches: stable ([main](https://github.com/an-anime-team/wavey-launcher/tree/main)) and dev ([next](https://github.com/an-anime-team/wavey-launcher/tree/next)). Code changes will be pushed into dev branch and merged into stable once they're ready for new version release
+Starting from 3.2.1 ([fcab428](https://github.com/an-anime-fork/wavey-launcher/commit/fcab428cb40b1457f41e0856f9d1e1473acbe653)) we have 2 branches: stable ([main](https://github.com/an-anime-fork/wavey-launcher/tree/main)) and dev ([next](https://github.com/an-anime-fork/wavey-launcher/tree/next)). Code changes will be pushed into dev branch and merged into stable once they're ready for new version release
 
 <img src="repository/branches.png" />

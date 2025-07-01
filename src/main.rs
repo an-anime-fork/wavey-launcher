@@ -191,16 +191,16 @@ fn main() -> anyhow::Result<()> {
     gtk::IconTheme::for_display(&gtk::gdk::Display::default().unwrap())
         .add_resource_path(&format!("{APP_RESOURCE_PATH}/icons"));
 
-    // Set application's title
-    gtk::glib::set_application_name(&tr!("application-name"));
-    gtk::glib::set_program_name(Some(&tr!("application-name")));
-
     // Set UI language
     let lang = CONFIG.launcher.language.parse().expect("Wrong language format used in config");
 
     i18n::set_lang(lang).expect("Failed to set launcher language");
 
     tracing::info!("Set UI language to {}", i18n::get_lang());
+
+    // Set application's title
+    gtk::glib::set_application_name(&tr!("application-name"));
+    gtk::glib::set_program_name(Some(&tr!("application-name")));
 
     // Run FirstRun window if .first-run file persist
     if FIRST_RUN_FILE.exists() {

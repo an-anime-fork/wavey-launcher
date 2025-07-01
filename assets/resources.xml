@@ -7,7 +7,7 @@
   </gresource>
 
   <gresource prefix="/moe/cybik/pretty-waves/icons/hicolor/scalable/apps">
-    <file alias="moe.launcher.wavey-launcher.png">images/icon.png</file>
+    <file alias="moe.cybik.pretty-waves.png">images/icon.png</file>
   </gresource>
 
   <gresource prefix="/moe/cybik/pretty-waves/icons/scalable/actions">

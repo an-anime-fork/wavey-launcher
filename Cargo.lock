@@ -3986,7 +3986,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "wavey-launcher"
+name = "pretty-waves"
 version = "1.0.1"
 dependencies = [
  "anime-launcher-sdk",

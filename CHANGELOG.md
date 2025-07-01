@@ -19,6 +19,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <br>
 
-[unreleased]: https://github.com/an-anime-team/wavey-launcher/compare/1.0.1...next
-[1.0.1]: https://github.com/an-anime-team/wavey-launcher/compare/1.0.0...1.0.1
-[1.0.0]: https://github.com/an-anime-team/wavey-launcher/releases/tag/1.0.0
+[unreleased]: https://github.com/an-anime-fork/wavey-launcher/compare/1.0.1...next
+[1.0.1]: https://github.com/an-anime-fork/wavey-launcher/compare/1.0.0...1.0.1
+[1.0.0]: https://github.com/an-anime-fork/wavey-launcher/releases/tag/1.0.0

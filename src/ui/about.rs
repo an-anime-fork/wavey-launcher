@@ -36,8 +36,8 @@ impl SimpleComponent for AboutDialog {
             set_application_name: tr!("application-name").as_str(),
             set_application_icon: APP_ID,
 
-            set_website: "https://github.com/an-anime-team/wavey-launcher",
-            set_issue_url: "https://github.com/an-anime-team/wavey-launcher/issues",
+            set_website: "https://github.com/an-anime-fork/wavey-launcher",
+            set_issue_url: "https://github.com/an-anime-fork/wavey-launcher/issues",
 
             set_license_type: gtk::License::Gpl30,
             set_version: &APP_VERSION,

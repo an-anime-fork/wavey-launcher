@@ -9,7 +9,9 @@ height = Hoogte
 
 # Menu items
 
-launcher-folder = Launcher map
+application-name = Colorful Waves
+
+launcher-folder = Složka launcheru Launcher map
 game-folder = Spelmap
 config-file = Configuratiebestand
 debug-file = Debugbestand

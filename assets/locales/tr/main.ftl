@@ -9,7 +9,9 @@ height = Uzunluk
 
 # Menu items
 
-launcher-folder = İstemci dosyası
+application-name = Colorful Waves
+
+launcher-folder = Složka launcheru İstemci dosyası
 game-folder = Oyun dosyası
 config-file = Config dosyası
 debug-file = Debug dosyası

@@ -9,7 +9,9 @@ height = Höjd
 
 # Menu items
 
-launcher-folder = Mapp för starthanterare
+application-name = Colorful Waves
+
+launcher-folder = Složka launcheru Mapp för starthanterare
 game-folder = Spelets mapp
 config-file = Konfigurationsfil
 debug-file = Debug-fil

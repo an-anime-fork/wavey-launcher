@@ -48,3 +48,4 @@ fluent-templates = "0.13"
 unic-langid = "0.9"
 
 human-panic = "2.0.2"
+microxdg = "0.2.0"

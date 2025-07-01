@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/moe/launcher/wavey-launcher">
+  <gresource prefix="/moe/cybik/pretty-waves">
     <file preprocess="xml-stripblanks">images/modern.svg</file>
     <file preprocess="xml-stripblanks">images/classic.svg</file>
     <file>images/background.jpg</file>
   </gresource>
 
-  <gresource prefix="/moe/launcher/wavey-launcher/icons/hicolor/scalable/apps">
+  <gresource prefix="/moe/cybik/pretty-waves/icons/hicolor/scalable/apps">
     <file alias="moe.launcher.wavey-launcher.png">images/icon.png</file>
   </gresource>
 
-  <gresource prefix="/moe/launcher/wavey-launcher/icons/scalable/actions">
+  <gresource prefix="/moe/cybik/pretty-waves/icons/scalable/actions">
     <!-- Standard icons -->
 
     <file preprocess="xml-stripblanks" alias="document-save-symbolic.svg">images/icons/document-save-symbolic.svg</file>

@@ -9,7 +9,9 @@ height = Magasság
 
 # Menu items
 
-launcher-folder = Launcher mappa
+application-name = Colorful Waves
+
+launcher-folder = Složka launcheru Launcher mappa
 game-folder = Játék mappa
 config-file = Config fájl
 debug-file = Debug fájl

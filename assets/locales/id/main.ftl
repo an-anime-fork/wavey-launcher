@@ -9,7 +9,9 @@ height = Tinggi
 
 # Menu items
 
-launcher-folder = Folder launcher 
+application-name = Colorful Waves
+
+launcher-folder = Složka launcheru Folder launcher
 game-folder = Folder game 
 config-file = File konfigurasi 
 debug-file = File debug

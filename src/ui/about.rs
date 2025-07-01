@@ -33,7 +33,7 @@ impl SimpleComponent for AboutDialog {
 
     view! {
         dialog = adw::AboutWindow {
-            set_application_name: "Wavey Launcher",
+            set_application_name: tr!("application-name").as_str(),
             set_application_icon: APP_ID,
 
             set_website: "https://github.com/an-anime-team/wavey-launcher",

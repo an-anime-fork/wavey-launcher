@@ -9,7 +9,9 @@ height = Alto
 
 # Menu items
 
-launcher-folder = Carpeta del launcher
+application-name = Colorful Waves
+
+launcher-folder = Složka launcheru Carpeta del launcher
 game-folder = Carpeta del juego
 config-file = Archivo de configuración
 debug-file = Archivo de debug

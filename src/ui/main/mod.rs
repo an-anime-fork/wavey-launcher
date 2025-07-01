@@ -178,7 +178,7 @@ impl SimpleComponent for App {
                         set_title_widget = &adw::WindowTitle {
                             #[watch]
                             set_title: match model.style {
-                                LauncherStyle::Modern => "Wavey Launcher",
+                                LauncherStyle::Modern => "", // NOOO
                                 LauncherStyle::Classic => ""
                             }
                         },
@@ -221,7 +221,7 @@ impl SimpleComponent for App {
                             },
 
                             gtk::Label {
-                                set_label: "Wavey Launcher",
+                                set_label: &tr!("application-name"),
                                 set_margin_top: 32,
                                 add_css_class: "title-1"
                             }

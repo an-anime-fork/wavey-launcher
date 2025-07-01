@@ -1,6 +1,8 @@
 use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, Ordering};
 
+use anime_launcher_sdk::integrations::steam;
+
 use relm4::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
@@ -70,6 +72,8 @@ lazy_static::lazy_static! {
     ///
     /// Standard is `$HOME/.local/share/wavey-launcher/.first-run`
     pub static ref FIRST_RUN_FILE: PathBuf = LAUNCHER_FOLDER.join(".first-run");
+
+    pub static ref DEBUG_HALTER: PathBuf = LAUNCHER_FOLDER.join("/tmp/start_me");
 
     /// Global app's css
     static ref GLOBAL_CSS: String = format!("
@@ -145,7 +149,11 @@ fn main() -> anyhow::Result<()> {
             "--just-run-game"      => just_run_game      = true,
             "--no-verbose-tracing" => no_verbose_tracing = true,
 
-            _ => gtk_args.push(arg)
+            _ => {
+                if ! arg.ends_with(".exe") {
+                    gtk_args.push(arg.to_string());
+                }
+            }
         }
     }
 
@@ -202,8 +210,10 @@ fn main() -> anyhow::Result<()> {
     gtk::glib::set_application_name(&tr!("application-name"));
     gtk::glib::set_program_name(Some(&tr!("application-name")));
 
+    //while !DEBUG_HALTER.exists() { /* noop */ }
+
     // Run FirstRun window if .first-run file persist
-    if FIRST_RUN_FILE.exists() {
+    if FIRST_RUN_FILE.exists() && !steam::is_install_managed_by_steam() {
         // Create the app
         let app = RelmApp::new(APP_ID)
             .with_args(gtk_args);

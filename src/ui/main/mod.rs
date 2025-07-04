@@ -74,7 +74,7 @@ pub enum AppMsg {
 
     /// Supposed to be called automatically on app's run when the latest game version
     /// was retrieved from the API
-    SetGameDiff(Option<VersionDiff>),
+    //SetGameDiff(Option<VersionDiff>),
 
     /// Supposed to be called automatically on app's run when the latest main patch version
     /// was retrieved from remote repos
@@ -749,7 +749,7 @@ impl SimpleComponent for App {
             })));
 
             // Update initial game version status
-
+            /*
             tasks.push(std::thread::spawn(clone!(@strong sender => move || {
                 sender.input(AppMsg::SetGameDiff(match GAME.try_get_diff() {
                     Ok(diff) => Some(diff),
@@ -767,6 +767,7 @@ impl SimpleComponent for App {
 
                 tracing::info!("Updated game version status");
             })));
+            */
 
             // Await for tasks to finish execution
             for task in tasks {
@@ -774,6 +775,7 @@ impl SimpleComponent for App {
             }
 
             // Update launcher state
+            // this launchers the reaction updating the pages
             sender.input(AppMsg::UpdateLauncherState {
                 perform_on_download_needed: false,
                 show_status_page: true
@@ -852,10 +854,12 @@ impl SimpleComponent for App {
                 }
             }
 
+            /*
             #[allow(unused_must_use)]
             AppMsg::SetGameDiff(diff) => unsafe {
                 PREFERENCES_WINDOW.as_ref().unwrap_unchecked().sender().send(PreferencesAppMsg::SetGameDiff(diff));
             }
+            */
 
             // #[allow(unused_must_use)]
             // AppMsg::SetMainPatch(patch) => unsafe {

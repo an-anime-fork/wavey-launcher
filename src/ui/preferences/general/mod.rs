@@ -34,7 +34,7 @@ pub struct GeneralApp {
 pub enum GeneralAppMsg {
     /// Supposed to be called automatically on app's run when the latest game version
     /// was retrieved from the API
-    SetGameDiff(Option<VersionDiff>),
+    //SetGameDiff(Option<VersionDiff>),
 
     /// Supposed to be called automatically on app's run when the latest UnityPlayer patch version
     /// was retrieved from remote repos
@@ -475,9 +475,11 @@ impl SimpleAsyncComponent for GeneralApp {
         tracing::debug!("Called general settings event: {:?}", msg);
 
         match msg {
+            /*
             GeneralAppMsg::SetGameDiff(diff) => {
                 self.game_diff = diff;
             }
+            */
 
             // GeneralAppMsg::SetMainPatch(patch) => {
             //     self.main_patch = patch;

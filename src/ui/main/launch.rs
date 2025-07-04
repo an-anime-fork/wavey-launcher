@@ -36,6 +36,7 @@ pub fn launch(sender: ComponentSender<App>) {
             .with_prefix(&config.game.wine.prefix);
 
         // Fix for the in-game browser being a black window
+        // TODO: fix this one, it's superbad
         wine.run_args_with_env(["winecfg", "-v", "win7"], config.game.wine.sync.get_env_vars())
             .expect("Failed to run wine server")
             .wait()

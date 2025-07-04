@@ -142,6 +142,8 @@ fn main() -> anyhow::Result<()> {
     let args = std::env::args().collect::<Vec<_>>();
     let mut gtk_args = Vec::new();
 
+    let mut exec_path = String::from("");
+
     // Parse arguments
     for arg in args {
         match arg.as_str() {
@@ -151,7 +153,9 @@ fn main() -> anyhow::Result<()> {
             "--no-verbose-tracing" => no_verbose_tracing = true,
 
             _ => {
-                if ! arg.ends_with(".exe") {
+                if arg.ends_with(".exe") {
+                    exec_path = arg;
+                } else {
                     gtk_args.push(arg.to_string());
                 }
             }
@@ -211,7 +215,7 @@ fn main() -> anyhow::Result<()> {
     gtk::glib::set_application_name(&tr!("application-name"));
     gtk::glib::set_program_name(Some(&tr!("application-name")));
 
-    //while !DEBUG_HALTER.exists() { /* noop */ }
+    while !DEBUG_HALTER.exists() { /* noop */ }
 
     // Quirk: early detection of Steam Environment
     if steam::is_in_steam_startup_phase() {

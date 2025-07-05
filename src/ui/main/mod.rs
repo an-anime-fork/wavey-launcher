@@ -653,7 +653,7 @@ impl SimpleComponent for App {
         std::thread::spawn(move || {
             tracing::info!("Initializing heavy tasks");
 
-            let mut tasks = Vec::new();
+            //let mut tasks = Vec::new();
 
             // Download background picture if needed
 
@@ -672,6 +672,7 @@ impl SimpleComponent for App {
 
             // Update components index
 
+            /*
             tasks.push(std::thread::spawn(clone!(@strong sender => move || {
                 let components = ComponentsLoader::new(&CONFIG.components.path);
 
@@ -718,11 +719,11 @@ impl SimpleComponent for App {
                         });
                     }
                 }
-            })));
+            })));*/
 
             // Update initial patch status
 
-            tasks.push(std::thread::spawn(clone!(@strong sender => move || {
+            //tasks.push(std::thread::spawn(clone!(@strong sender => move || {
                 // Get main patch status
                 // sender.input(AppMsg::SetMainPatch(match jadeite::get_metadata() {
                 //     Ok(metadata) => {
@@ -746,7 +747,7 @@ impl SimpleComponent for App {
                 // }));
 
                 // tracing::info!("Updated patch status");
-            })));
+            //})));
 
             // Update initial game version status
             /*
@@ -770,9 +771,11 @@ impl SimpleComponent for App {
             */
 
             // Await for tasks to finish execution
-            for task in tasks {
+
+            /*for task in tasks {
                 task.join().expect("Failed to join task");
             }
+            */
 
             // Update launcher state
             // this launchers the reaction updating the pages

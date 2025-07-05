@@ -133,7 +133,7 @@ impl SimpleAsyncComponent for SelectVoiceoversApp {
             #[allow(unused_must_use)]
             SelectVoiceoversAppMsg::Continue => {
                 match self.update_config() {
-                    Ok(_) => sender.output(Self::Output::ScrollToDownloadComponents),
+                    Ok(_) => sender.output(Self::Output::ScrollToFinish),
     
                     Err(err) => sender.output(Self::Output::Toast {
                         title: tr!("config-update-error"),

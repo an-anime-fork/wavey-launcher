@@ -37,7 +37,7 @@ pub enum FirstRunAppMsg {
 
     ScrollToDependencies,
     ScrollToDefaultPaths,
-    ScrollToDownloadComponents,
+    //ScrollToDownloadComponents,
     ScrollToFinish,
 
     Toast {
@@ -181,6 +181,7 @@ impl SimpleComponent for FirstRunApp {
                 self.carousel.scroll_to(self.default_paths.widget(), true);
             }
 
+            /*
             FirstRunAppMsg::ScrollToDownloadComponents => {
                 // Update components index
                 sender.input(FirstRunAppMsg::SetLoadingStatus(Some(Some(tr!("updating-components-index")))));
@@ -192,6 +193,7 @@ impl SimpleComponent for FirstRunApp {
 
                 #[allow(unused_must_use)]
                 std::thread::spawn(move || {
+                    
                     match components.is_sync(config.components.servers) {
                         Ok(Some(_)) => (),
 
@@ -235,6 +237,7 @@ impl SimpleComponent for FirstRunApp {
 
                 self.carousel.scroll_to(self.download_components.widget(), true);
             }
+            */
 
             FirstRunAppMsg::ScrollToFinish => {
                 self.title = tr!("finish");

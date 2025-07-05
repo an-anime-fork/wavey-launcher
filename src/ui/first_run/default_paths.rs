@@ -385,7 +385,7 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                         }
 
                         else {
-                            sender.output(Self::Output::ScrollToDownloadComponents);
+                            sender.output(Self::Output::ScrollToFinish);
                         }
                     }
 

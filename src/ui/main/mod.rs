@@ -719,7 +719,8 @@ impl SimpleComponent for App {
                         });
                     }
                 }
-            })));*/
+            })));
+            */
 
             // Update initial patch status
 
@@ -771,8 +772,8 @@ impl SimpleComponent for App {
             */
 
             // Await for tasks to finish execution
-
-            /*for task in tasks {
+            /*
+            for task in tasks {
                 task.join().expect("Failed to join task");
             }
             */

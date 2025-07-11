@@ -57,14 +57,11 @@ enum UserEvent {
 use ksni;
 use ksni::blocking::TrayMethods;
 
-// provides the spawn method
-struct dumbtray {
-    //pub callback: Box<dyn Fn() + Send>
-    //callback:  Box<dyn Fn() + Send>
+struct launcher_systray {
     sender: ComponentSender<App>,
 }
 
-impl ksni::Tray for dumbtray {
+impl ksni::Tray for launcher_systray {
     fn id(&self) -> String {
         env!("CARGO_PKG_NAME").into()
     }
@@ -78,9 +75,9 @@ impl ksni::Tray for dumbtray {
         use ksni::menu::*;
         vec![
             StandardItem {
-                label: "a2".into(),
+                label: "Show/Hide".into(),
                 activate: Box::new(|this: &mut Self| {
-                    this.sender.input(AppMsg::ShowWindow)
+                    this.sender.input(AppMsg::ToggleWindow)
                 }),
                 ..Default::default()
             }.into(),
@@ -88,7 +85,9 @@ impl ksni::Tray for dumbtray {
             StandardItem {
                 label: "Exit".into(),
                 icon_name: "application-exit".into(),
-                activate: Box::new(|_| std::process::exit(0)),
+                activate: Box::new(|_| {
+                    std::process::exit(0)
+                }),
                 ..Default::default()
             }.into(),
         ]
@@ -161,6 +160,7 @@ pub enum AppMsg {
 
     HideWindow,
     ShowWindow,
+    ToggleWindow,
 
     Toast {
         title: String,
@@ -648,9 +648,9 @@ impl SimpleComponent for App {
                 .detach());
         }
 
-        let moo = std::thread::spawn(clone!(@strong sender => move || {
-            let tray = dumbtray {
-                //callback: Box::new(|| sender.input(AppMsg::ShowWindow)),
+        // KDE StatusNotifierItem systray icon
+        let systray = std::thread::spawn(clone!(@strong sender => move || {
+            let tray = launcher_systray {
                 sender: sender
             };
             let spawned = tray.spawn().unwrap();
@@ -1041,6 +1041,13 @@ impl SimpleComponent for App {
 
             AppMsg::ShowWindow => unsafe {
                 MAIN_WINDOW.as_ref().unwrap_unchecked().present();
+            }
+
+            AppMsg::ToggleWindow => unsafe {
+                match MAIN_WINDOW.as_ref().unwrap_unchecked().is_visible() {
+                    true => MAIN_WINDOW.as_ref().unwrap_unchecked().set_visible(false),
+                    false => MAIN_WINDOW.as_ref().unwrap_unchecked().present()
+                }
             }
 
             AppMsg::Toast { title, description } => self.toast(title, description)

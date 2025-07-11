@@ -1,3 +1,4 @@
+use std::thread;
 use relm4::{
     prelude::*,
     actions::*,
@@ -32,6 +33,68 @@ use crate::ui::components::*;
 
 use super::preferences::main::*;
 use super::about::*;
+
+use event_listener::{Event, Listener};
+use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
+/*
+use tray_icon::{
+    TrayIconBuilder, TrayIconEvent
+};
+
+// Manual event loop?
+use tao::{
+    event::{Event, WindowEvent},
+    event_loop::{ControlFlow, EventLoop, EventLoopBuilder, EventLoopProxy},
+};
+
+enum UserEvent {
+    TrayIconEvent(tray_icon::TrayIconEvent),
+    //TrayIconEvent(tray_icon::TrayIconEvent),
+}
+*/
+
+use ksni;
+use ksni::blocking::TrayMethods;
+
+// provides the spawn method
+struct dumbtray {
+    //pub callback: Box<dyn Fn() + Send>
+    //callback:  Box<dyn Fn() + Send>
+    sender: ComponentSender<App>,
+}
+
+impl ksni::Tray for dumbtray {
+    fn id(&self) -> String {
+        env!("CARGO_PKG_NAME").into()
+    }
+    fn icon_name(&self) -> String {
+        "help-about".into()
+    }
+    fn title(&self) -> String {
+        "MyTray".into()
+    }
+    fn menu(&self) -> Vec<ksni::MenuItem<Self>> {
+        use ksni::menu::*;
+        vec![
+            StandardItem {
+                label: "a2".into(),
+                activate: Box::new(|this: &mut Self| {
+                    this.sender.input(AppMsg::ShowWindow)
+                }),
+                ..Default::default()
+            }.into(),
+            MenuItem::Separator,
+            StandardItem {
+                label: "Exit".into(),
+                icon_name: "application-exit".into(),
+                activate: Box::new(|_| std::process::exit(0)),
+                ..Default::default()
+            }.into(),
+        ]
+    }
+}
+
 
 relm4::new_action_group!(WindowActionGroup, "win");
 
@@ -570,6 +633,7 @@ impl SimpleComponent for App {
         let widgets = view_output!();
 
         let about_dialog_broker: MessageBroker<AboutDialogMsg> = MessageBroker::new();
+        let main_dialog_broker:  MessageBroker<AppMsg> = MessageBroker::new();
 
         unsafe {
             MAIN_WINDOW = Some(widgets.main_window.clone());
@@ -583,6 +647,17 @@ impl SimpleComponent for App {
                 .launch_with_broker((), &about_dialog_broker)
                 .detach());
         }
+
+        let moo = std::thread::spawn(clone!(@strong sender => move || {
+            let tray = dumbtray {
+                //callback: Box::new(|| sender.input(AppMsg::ShowWindow)),
+                sender: sender
+            };
+            let spawned = tray.spawn().unwrap();
+            loop {
+                std::thread::park()
+            }
+        }));
 
         let mut group = RelmActionGroup::<WindowActionGroup>::new();
 
@@ -644,6 +719,40 @@ impl SimpleComponent for App {
         }));
 
         widgets.main_window.insert_action_group("win", Some(&group.into_action_group()));
+        /*
+        std::thread::spawn(move || {
+            let mut tray_icon = None;
+            let event_loop = EventLoopBuilder::<UserEvent>::with_user_event().build();
+            let tray_channel = TrayIconEvent::receiver();
+            // set a tray event handler that forwards the event and wakes up the event loop
+            let proxy = event_loop.create_proxy();
+            TrayIconEvent::set_event_handler(Some(move |event| {
+                proxy.send_event(UserEvent::TrayIconEvent(event));
+            }));
+
+            tray_icon = Some(
+                TrayIconBuilder::new()
+                    .with_tooltip("tao - awesome windowing lib")
+                    .build()
+                    .unwrap(),
+            );
+
+            event_loop.run(move |event, _, control_flow| {
+                // ControlFlow::Poll continuously runs the event loop, even if the OS hasn't
+                // dispatched any events. This is ideal for games and similar applications.
+                *control_flow = ControlFlow::Poll;
+
+                // ControlFlow::Wait pauses the event loop if no events are available to process.
+                // This is ideal for non-game applications that only update in response to user
+                // input, and uses significantly less power/CPU time than ControlFlow::Poll.
+                *control_flow = ControlFlow::Wait;
+
+                match event {
+                    _ => ()
+                }
+            });
+        });
+        */
 
         tracing::info!("Main window initialized");
 

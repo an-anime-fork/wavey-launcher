@@ -772,9 +772,7 @@ impl SimpleComponent for App {
             AppMsg::PerformAction => unsafe {
                 match self.state.as_ref().unwrap_unchecked() {
                     LauncherState::Launch => {
-                        tracing::info!("time check ui main");
                         launch::launch(sender);
-                        tracing::info!("time check ui main exit");
                     },
 
                     LauncherState::WineNotInstalled => download_wine::download_wine(sender, self.progress_bar.sender().to_owned()),

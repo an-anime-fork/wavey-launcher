@@ -1,3 +1,4 @@
+use std::io::Read;
 use std::thread;
 use relm4::{
     prelude::*,
@@ -18,8 +19,6 @@ mod download_diff;
 mod disable_telemetry;
 mod launch;
 
-use anime_launcher_sdk::components::loader::ComponentsLoader;
-
 use anime_launcher_sdk::config::ConfigExt;
 use anime_launcher_sdk::wuwa::config::Config;
 
@@ -34,28 +33,14 @@ use crate::ui::components::*;
 use super::preferences::main::*;
 use super::about::*;
 
-use event_listener::{Event, Listener};
-use std::sync::Arc;
-use std::sync::atomic::{AtomicBool, Ordering};
-/*
-use tray_icon::{
-    TrayIconBuilder, TrayIconEvent
-};
-
-// Manual event loop?
-use tao::{
-    event::{Event, WindowEvent},
-    event_loop::{ControlFlow, EventLoop, EventLoopBuilder, EventLoopProxy},
-};
-
-enum UserEvent {
-    TrayIconEvent(tray_icon::TrayIconEvent),
-    //TrayIconEvent(tray_icon::TrayIconEvent),
-}
-*/
+use std::sync::atomic::{Ordering};
 
 use ksni;
 use ksni::blocking::TrayMethods;
+
+use image::{GenericImageView};
+use std::sync::LazyLock;
+use gtk::gio;
 
 struct launcher_systray {
     sender: ComponentSender<App>,
@@ -65,12 +50,43 @@ impl ksni::Tray for launcher_systray {
     fn id(&self) -> String {
         env!("CARGO_PKG_NAME").into()
     }
-    fn icon_name(&self) -> String {
-        "help-about".into()
-    }
+
     fn title(&self) -> String {
-        "MyTray".into()
+        tr!("application-name").into()
     }
+
+    fn icon_pixmap(&self) -> Vec<ksni::Icon> {
+        static ICON: LazyLock<ksni::Icon> = LazyLock::new(|| unsafe {
+            let moo = gio::functions::resources_open_stream(
+                &format!("{APP_RESOURCE_PATH}/icons/hicolor/scalable/apps/{APP_ID}.png").as_str(),
+                gio::ResourceLookupFlags::NONE
+            ).expect("yes");
+            let mut thedata : Vec<u8> = Vec::new();
+            let a = moo.into_read().read_to_end(&mut thedata);
+
+            let img = image::load_from_memory_with_format(
+                thedata.as_mut_slice(),
+                image::ImageFormat::Png,
+            )
+                .expect("valid image");
+            let (width, height) = img.dimensions();
+            let mut data = img.into_rgba8().into_vec();
+            assert_eq!(data.len() % 4, 0);
+            for pixel in data.chunks_exact_mut(4) {
+                pixel.rotate_right(1) // rgba to argb
+            }
+            ksni::Icon {
+                width: width as i32,
+                height: height as i32,
+                data,
+            }
+        });
+
+        // A clone is a waste for static icon, but the API have to accommodate dynamically generated
+        // icons, and keep simplicity
+        vec![ICON.clone()]
+    }
+
     fn menu(&self) -> Vec<ksni::MenuItem<Self>> {
         use ksni::menu::*;
         vec![
@@ -83,7 +99,7 @@ impl ksni::Tray for launcher_systray {
             }.into(),
             MenuItem::Separator,
             StandardItem {
-                label: "Exit".into(),
+                label: tr!("exit").into(),
                 icon_name: "application-exit".into(),
                 activate: Box::new(|_| {
                     std::process::exit(0)
@@ -197,11 +213,13 @@ impl SimpleComponent for App {
             set_default_size: (
                 match model.style {
                     LauncherStyle::Modern => 900,
-                    LauncherStyle::Classic => 1094 // (w = 1280 / 730 * h, where 1280x730 is default background picture resolution)
+                    LauncherStyle::Classic => 1094, // (w = 1280 / 730 * h, where 1280x730 is default background picture resolution)
+                    LauncherStyle::SteamDeck => 1280
                 },
                 match model.style {
                     LauncherStyle::Modern => 600,
-                    LauncherStyle::Classic => 624
+                    LauncherStyle::Classic => 624,
+                    LauncherStyle::SteamDeck => 800
                 }
             ),
 
@@ -215,6 +233,7 @@ impl SimpleComponent for App {
 
                 match model.style {
                     LauncherStyle::Modern => (),
+                    LauncherStyle::SteamDeck => (),
                     LauncherStyle::Classic => {
                         if model.loading.is_none() {
                             classes.push("classic-style");
@@ -234,7 +253,8 @@ impl SimpleComponent for App {
                         #[watch]
                         set_css_classes: match model.style {
                             LauncherStyle::Modern => &[""],
-                            LauncherStyle::Classic => &["flat"]
+                            LauncherStyle::SteamDeck => &[""],
+                            LauncherStyle::Classic => &["flat"],
                         },
 
                         #[wrap(Some)]
@@ -242,7 +262,8 @@ impl SimpleComponent for App {
                             #[watch]
                             set_title: match model.style {
                                 LauncherStyle::Modern => "", // NOOO
-                                LauncherStyle::Classic => ""
+                                LauncherStyle::Classic => "",
+                                LauncherStyle::SteamDeck => ""
                             }
                         },
 
@@ -293,6 +314,7 @@ impl SimpleComponent for App {
                         add = &adw::PreferencesGroup {
                             #[watch]
                             set_valign: match model.style {
+                                LauncherStyle::SteamDeck => gtk::Align::Center,
                                 LauncherStyle::Modern => gtk::Align::Center,
                                 LauncherStyle::Classic => gtk::Align::End
                             },
@@ -300,6 +322,7 @@ impl SimpleComponent for App {
                             #[watch]
                             set_width_request: match model.style {
                                 LauncherStyle::Modern => -1,
+                                LauncherStyle::SteamDeck => 800,
                                 LauncherStyle::Classic => 800
                             },
 
@@ -316,6 +339,7 @@ impl SimpleComponent for App {
                         add = &adw::PreferencesGroup {
                             #[watch]
                             set_valign: match model.style {
+                                LauncherStyle::SteamDeck => gtk::Align::Center,
                                 LauncherStyle::Modern => gtk::Align::Center,
                                 LauncherStyle::Classic => gtk::Align::End
                             },
@@ -323,6 +347,7 @@ impl SimpleComponent for App {
                             #[watch]
                             set_width_request: match model.style {
                                 LauncherStyle::Modern => -1,
+                                LauncherStyle::SteamDeck => 800,
                                 LauncherStyle::Classic => 800
                             },
 
@@ -332,6 +357,7 @@ impl SimpleComponent for App {
                             #[watch]
                             set_margin_bottom: match model.style {
                                 LauncherStyle::Modern => 48,
+                                LauncherStyle::SteamDeck => 48,
                                 LauncherStyle::Classic => 0
                             },
 
@@ -341,12 +367,14 @@ impl SimpleComponent for App {
                                 #[watch]
                                 set_halign: match model.style {
                                     LauncherStyle::Modern => gtk::Align::Center,
+                                    LauncherStyle::SteamDeck => gtk::Align::Center,
                                     LauncherStyle::Classic => gtk::Align::End
                                 },
 
                                 #[watch]
                                 set_height_request: match model.style {
                                     LauncherStyle::Modern => -1,
+                                    LauncherStyle::SteamDeck => -1,
                                     LauncherStyle::Classic => 40
                                 },
 
@@ -364,66 +392,21 @@ impl SimpleComponent for App {
                                             #[watch]
                                             set_icon_name: match &model.state {
                                                 Some(LauncherState::Launch) // |
-                                                // Some(LauncherState::PatchNotVerified) |
-                                                // Some(LauncherState::PatchConcerning) |
                                                     => "media-playback-start-symbolic",
-
-                                                // Some(LauncherState::PatchNotInstalled) |
-                                                // Some(LauncherState::PatchUpdateAvailable) => "document-save-symbolic",
-
-
-                                                //Some(LauncherState::TelemetryNotDisabled) => "security-high-symbolic",
 
                                                 Some(LauncherState::WineNotInstalled) |
                                                 Some(LauncherState::PrefixNotExists) => "document-save-symbolic",
 
-                                                //Some(LauncherState::GameUpdateAvailable(_)) |
-                                                //Some(LauncherState::GameNotInstalled(_)) => "document-save-symbolic",
-
-                                                // Some(LauncherState::PatchBroken) |
-                                                // Some(LauncherState::PatchUnsafe) |
                                                 None => "window-close-symbolic"
                                             },
 
                                             #[watch]
                                             set_label: &match &model.state {
                                                 Some(LauncherState::Launch) => tr!("launch"),
-                                                // Some(LauncherState::PatchNotVerified) |
-                                                // Some(LauncherState::PatchConcerning)
 
-                                                // Some(LauncherState::PatchNotInstalled) |
-                                                // Some(LauncherState::PatchUpdateAvailable) => tr!("download-patch"),
-
-                                                // Some(LauncherState::PatchBroken) => tr!("patch-broken"),
-                                                // Some(LauncherState::PatchUnsafe) => tr!("patch-unsafe"),
-
-                                                // TODO: wouldn't hurt to translate right?
-                                                //Some(LauncherState::Vcrun2015NotInstalled) => String::from("Install vcrun2015"),
-
-                                                //Some(LauncherState::TelemetryNotDisabled) => tr!("disable-telemetry"),
 
                                                 Some(LauncherState::WineNotInstalled) => tr!("download-wine"),
                                                 Some(LauncherState::PrefixNotExists)  => tr!("create-prefix"),
-
-                                                /*Some(LauncherState::GameUpdateAvailable(diff)) => {
-                                                    match (Config::get(), diff.file_name()) {
-                                                        (Ok(config), Some(filename)) => {
-                                                            let temp = config.launcher.temp.unwrap_or_else(std::env::temp_dir);
-
-                                                            if temp.join(filename).exists() {
-                                                                tr!("resume")
-                                                            }
-
-                                                            else {
-                                                                tr!("update")
-                                                            }
-                                                        }
-
-                                                        _ => tr!("update")
-                                                    }
-                                                },*/
-
-                                                //Some(LauncherState::GameNotInstalled(_)) => tr!("download"),
 
                                                 None => String::from("...")
                                             }
@@ -431,33 +414,18 @@ impl SimpleComponent for App {
 
                                         #[watch]
                                         set_sensitive: !model.disabled_buttons && match &model.state {
-                                            // Some(LauncherState::PatchBroken) |
-                                            // Some(LauncherState::PatchUnsafe) => false,
-
                                             Some(_) => true,
                                             None => false
                                         },
 
                                         #[watch]
                                         set_css_classes: match &model.state {
-                                            // Some(LauncherState::PatchNotVerified) => &["warning", "pill"],
-
-                                            // Some(LauncherState::PatchBroken) |
-                                            // Some(LauncherState::PatchUnsafe) |
-                                            // Some(LauncherState::PatchConcerning)
-                                            //     => &["error", "pill"],
-
                                             Some(_) => &["suggested-action", "pill"],
                                             None => &["pill"]
                                         },
 
                                         #[watch]
                                         set_tooltip_text: Some(&match &model.state {
-                                            // Some(LauncherState::PatchNotVerified) => tr!("patch-testing-tooltip"),
-                                            // Some(LauncherState::PatchBroken) => tr!("patch-broken-tooltip"),
-                                            // Some(LauncherState::PatchUnsafe) => tr!("patch-unsafe-tooltip"),
-                                            // Some(LauncherState::PatchConcerning) => tr!("patch-concerning-tooltip"),
-
                                             _ => String::new()
                                         }),
 
@@ -509,59 +477,6 @@ impl SimpleComponent for App {
                                                     description: Some(err.to_string())
                                                 });
                                             }
-
-                                            // Old warning message which I don't really understand now:
-                                            // 
-                                            // Doesn't work on all the systems
-                                            // e.g. won't work if you didn't install wine system-wide
-                                            // there's some reasons for it
-                                            // 
-                                            // UPD: I've tried this, and the problem is that it's completely pointless
-                                            //      For whatever reason it just doesn't work
-
-                                            // match Config::get() {
-                                            //     Ok(config) => {
-                                            //         match config.get_selected_wine() {
-                                            //             Ok(Some(version)) => {
-                                            //                 let result = version
-                                            //                     .to_wine(&config.components.path, Some(&config.game.wine.builds.join(&version.name)))
-                                            //                     .with_prefix(config.get_wine_prefix_path())
-                                            //                     .stop_processes(true);
-
-                                            //                 dbg!(String::from_utf8_lossy(&result.as_ref().ok().unwrap().stdout));
-                                            //                 dbg!(String::from_utf8_lossy(&result.as_ref().ok().unwrap().stderr));
-
-                                            //                 if let Err(err) = result {
-                                            //                     sender.input(AppMsg::Toast {
-                                            //                         title: tr!("kill-game-process-failed"),
-                                            //                         description: Some(err.to_string())
-                                            //                     });
-                                            //                 }
-                                            //             }
-
-                                            //             Ok(None) => {
-                                            //                 sender.input(AppMsg::Toast {
-                                            //                     title: tr!("failed-get-selected-wine"),
-                                            //                     description: None
-                                            //                 });
-                                            //             }
-
-                                            //             Err(err) => {
-                                            //                 sender.input(AppMsg::Toast {
-                                            //                     title: tr!("failed-get-selected-wine"),
-                                            //                     description: Some(err.to_string())
-                                            //                 });
-                                            //             }
-                                            //         }
-                                            //     }
-
-                                            //     Err(err) => {
-                                            //         sender.input(AppMsg::Toast {
-                                            //             title: tr!("config-file-opening-error"),
-                                            //             description: Some(err.to_string())
-                                            //         });
-                                            //     }
-                                            // }
                                         }
                                     }
                                 },
@@ -719,174 +634,12 @@ impl SimpleComponent for App {
         }));
 
         widgets.main_window.insert_action_group("win", Some(&group.into_action_group()));
-        /*
-        std::thread::spawn(move || {
-            let mut tray_icon = None;
-            let event_loop = EventLoopBuilder::<UserEvent>::with_user_event().build();
-            let tray_channel = TrayIconEvent::receiver();
-            // set a tray event handler that forwards the event and wakes up the event loop
-            let proxy = event_loop.create_proxy();
-            TrayIconEvent::set_event_handler(Some(move |event| {
-                proxy.send_event(UserEvent::TrayIconEvent(event));
-            }));
-
-            tray_icon = Some(
-                TrayIconBuilder::new()
-                    .with_tooltip("tao - awesome windowing lib")
-                    .build()
-                    .unwrap(),
-            );
-
-            event_loop.run(move |event, _, control_flow| {
-                // ControlFlow::Poll continuously runs the event loop, even if the OS hasn't
-                // dispatched any events. This is ideal for games and similar applications.
-                *control_flow = ControlFlow::Poll;
-
-                // ControlFlow::Wait pauses the event loop if no events are available to process.
-                // This is ideal for non-game applications that only update in response to user
-                // input, and uses significantly less power/CPU time than ControlFlow::Poll.
-                *control_flow = ControlFlow::Wait;
-
-                match event {
-                    _ => ()
-                }
-            });
-        });
-        */
 
         tracing::info!("Main window initialized");
-
-        // let download_picture = model.style == LauncherStyle::Classic && !KEEP_BACKGROUND_FILE.exists();
 
         // Initialize some heavy tasks
         std::thread::spawn(move || {
             tracing::info!("Initializing heavy tasks");
-
-            //let mut tasks = Vec::new();
-
-            // Download background picture if needed
-
-            // if download_picture {
-            //     tasks.push(std::thread::spawn(clone!(@strong sender => move || {
-            //         if let Err(err) = crate::background::download_background() {
-            //             tracing::error!("Failed to download background picture: {err}");
-
-            //             sender.input(AppMsg::Toast {
-            //                 title: tr!("background-downloading-failed"),
-            //                 description: Some(err.to_string())
-            //             });
-            //         }
-            //     })));
-            // }
-
-            // Update components index
-
-            /*
-            tasks.push(std::thread::spawn(clone!(@strong sender => move || {
-                let components = ComponentsLoader::new(&CONFIG.components.path);
-
-                match components.is_sync(&CONFIG.components.servers) {
-                    Ok(Some(_)) => (),
-
-                    Ok(None) => {
-                        for host in &CONFIG.components.servers {
-                            match components.sync(host) {
-                                Ok(changes) => {
-                                    sender.input(AppMsg::Toast {
-                                        title: tr!("components-index-updated"),
-                                        description: if changes.is_empty() {
-                                            None
-                                        } else {
-                                            Some(changes.into_iter()
-                                                .map(|line| format!("- {line}"))
-                                                .collect::<Vec<_>>()
-                                                .join("\n"))
-                                        }
-                                    });
-
-                                    break;
-                                }
-
-                                Err(err) => {
-                                    tracing::error!("Failed to sync components index");
-
-                                    sender.input(AppMsg::Toast {
-                                        title: tr!("components-index-sync-failed"),
-                                        description: Some(err.to_string())
-                                    });
-                                }
-                            }
-                        }
-                    }
-
-                    Err(err) => {
-                        tracing::error!("Failed to verify that components index synced");
-
-                        sender.input(AppMsg::Toast {
-                            title: tr!("components-index-verify-failed"),
-                            description: Some(err.to_string())
-                        });
-                    }
-                }
-            })));
-            */
-
-            // Update initial patch status
-
-            //tasks.push(std::thread::spawn(clone!(@strong sender => move || {
-                // Get main patch status
-                // sender.input(AppMsg::SetMainPatch(match jadeite::get_metadata() {
-                //     Ok(metadata) => {
-                //         let status = GAME.get_version()
-                //             .map(|version| metadata.games.hsr.global.get_status(version))
-                //             .unwrap_or(metadata.games.hsr.global.status);
-                //
-                //         Some((metadata.jadeite.version, status))
-                //     }
-                //
-                //     Err(err) => {
-                //         tracing::error!("Failed to fetch patch metadata: {err}");
-                //
-                //         sender.input(AppMsg::Toast {
-                //             title: tr!("patch-info-fetching-error"),
-                //             description: Some(err.to_string())
-                //         });
-                //
-                //         None
-                //     }
-                // }));
-
-                // tracing::info!("Updated patch status");
-            //})));
-
-            // Update initial game version status
-            /*
-            tasks.push(std::thread::spawn(clone!(@strong sender => move || {
-                sender.input(AppMsg::SetGameDiff(match GAME.try_get_diff() {
-                    Ok(diff) => Some(diff),
-                    Err(err) => {
-                        tracing::error!("Failed to find game diff: {err}");
-
-                        sender.input(AppMsg::Toast {
-                            title: tr!("game-diff-finding-error"),
-                            description: Some(err.to_string())
-                        });
-
-                        None
-                    }
-                }));
-
-                tracing::info!("Updated game version status");
-            })));
-            */
-
-            // Await for tasks to finish execution
-            /*
-            for task in tasks {
-                task.join().expect("Failed to join task");
-            }
-            */
-
             // Update launcher state
             // this launchers the reaction updating the pages
             sender.input(AppMsg::UpdateLauncherState {
@@ -926,10 +679,6 @@ impl SimpleComponent for App {
                             StateUpdating::Game => {
                                 sender.input(AppMsg::SetLoadingStatus(Some(Some(tr!("loading-launcher-state--game")))));
                             }
-
-                            // StateUpdating::Patch => {
-                            //     sender.input(AppMsg::SetLoadingStatus(Some(Some(tr!("loading-launcher-state--patch")))));
-                            // }
                         }
                     }
                 });
@@ -953,31 +702,17 @@ impl SimpleComponent for App {
                     self.disabled_buttons = false;
                 }
 
+                if(steam::is_steam_deck()) {
+                    sender.input(AppMsg::SetLauncherStyle(LauncherStyle::SteamDeck));
+                }
+
                 if let Some(state) = state {
                     match state {
-                        /*
-                        LauncherState::GameUpdateAvailable(_) |
-                        LauncherState::GameNotInstalled(_) if perform_on_download_needed => {
-                            sender.input(AppMsg::PerformAction);
-                        }
-                        */
 
                         _ => ()
                     }
                 }
             }
-
-            /*
-            #[allow(unused_must_use)]
-            AppMsg::SetGameDiff(diff) => unsafe {
-                PREFERENCES_WINDOW.as_ref().unwrap_unchecked().sender().send(PreferencesAppMsg::SetGameDiff(diff));
-            }
-            */
-
-            // #[allow(unused_must_use)]
-            // AppMsg::SetMainPatch(patch) => unsafe {
-            //     PREFERENCES_WINDOW.as_ref().unwrap_unchecked().sender().send(PreferencesAppMsg::SetMainPatch(patch));
-            // }
 
             AppMsg::SetLauncherState(state) => {
                 self.state = state;
@@ -1015,23 +750,10 @@ impl SimpleComponent for App {
 
             AppMsg::PerformAction => unsafe {
                 match self.state.as_ref().unwrap_unchecked() {
-                    // LauncherState::PatchNotVerified |
-                    // LauncherState::PatchConcerning |
                     LauncherState::Launch => launch::launch(sender),
-
-                    // LauncherState::PatchNotInstalled |
-                    // LauncherState::PatchUpdateAvailable => update_patch::update_patch(sender, self.progress_bar.sender().to_owned()),
-
-                    //LauncherState::Vcrun2015NotInstalled => install_vcrun2015::install_vcrun2015(sender),
-
-                    //LauncherState::TelemetryNotDisabled => disable_telemetry::disable_telemetry(sender),
 
                     LauncherState::WineNotInstalled => download_wine::download_wine(sender, self.progress_bar.sender().to_owned()),
                     LauncherState::PrefixNotExists => create_prefix::create_prefix(sender),
-
-                    //LauncherState::GameUpdateAvailable(diff) |
-                    //LauncherState::GameNotInstalled(diff)  =>
-                    //    download_diff::download_diff(sender, self.progress_bar.sender().to_owned(), diff.to_owned())
                 }
             }
 

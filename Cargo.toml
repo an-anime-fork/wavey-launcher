@@ -57,3 +57,5 @@ microxdg = "0.2.0"
 
 ksni = { version = "0.3.1", features = ["blocking"] }
 event-listener = "5.4.0"
+image = "0.25.6"
+image-toolbox = "0.1.1"

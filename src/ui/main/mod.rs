@@ -56,25 +56,29 @@ impl ksni::Tray for launcher_systray {
     }
 
     fn icon_pixmap(&self) -> Vec<ksni::Icon> {
-        static ICON: LazyLock<ksni::Icon> = LazyLock::new(|| unsafe {
-            let moo = gio::functions::resources_open_stream(
+        // Directly taken from the ksni example code
+        static ICON: LazyLock<ksni::Icon> = LazyLock::new(|| {
+            // Load data from the GTK toolkit resource bits
+            let icon_ref = gio::functions::resources_open_stream(
                 &format!("{APP_RESOURCE_PATH}/icons/hicolor/scalable/apps/{APP_ID}.png").as_str(),
                 gio::ResourceLookupFlags::NONE
             ).expect("yes");
-            let mut thedata : Vec<u8> = Vec::new();
-            let a = moo.into_read().read_to_end(&mut thedata);
+            let mut datastore: Vec<u8> = Vec::new();
+            let _ = icon_ref.into_read().read_to_end(&mut datastore);
 
+            // Process data frmo PNG
             let img = image::load_from_memory_with_format(
-                thedata.as_mut_slice(),
+                datastore.as_mut_slice(),
                 image::ImageFormat::Png,
-            )
-                .expect("valid image");
+            ).expect("valid image");
             let (width, height) = img.dimensions();
             let mut data = img.into_rgba8().into_vec();
             assert_eq!(data.len() % 4, 0);
             for pixel in data.chunks_exact_mut(4) {
                 pixel.rotate_right(1) // rgba to argb
             }
+
+            // Generate the icon, finally
             ksni::Icon {
                 width: width as i32,
                 height: height as i32,

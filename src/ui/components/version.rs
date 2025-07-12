@@ -161,33 +161,37 @@ impl SimpleAsyncComponent for ComponentVersion {
                             let progress_bar_sender = self.progress_bar.sender().clone();
 
                             #[allow(unused_must_use)]
-                            std::thread::spawn(clone!(@strong self.download_folder as download_folder => move || {
-                                progress_bar_sender.send(ProgressBarMsg::Reset);
-                                progress_bar_sender.send(ProgressBarMsg::SetVisible(true));
+                            std::thread::spawn(clone!(
+                                #[strong(rename_to = download_folder)]
+                                self.download_folder,
+                                move || {
+                                    progress_bar_sender.send(ProgressBarMsg::Reset);
+                                    progress_bar_sender.send(ProgressBarMsg::SetVisible(true));
 
-                                installer.install(download_folder, move |state| {
-                                    match &state {
-                                        InstallerUpdate::UnpackingFinished |
-                                        InstallerUpdate::DownloadingError(_) |
-                                        InstallerUpdate::UnpackingError(_) => {
-                                            progress_bar_sender.send(ProgressBarMsg::SetVisible(false));
+                                    installer.install(download_folder, move |state| {
+                                        match &state {
+                                            InstallerUpdate::UnpackingFinished |
+                                            InstallerUpdate::DownloadingError(_) |
+                                            InstallerUpdate::UnpackingError(_) => {
+                                                progress_bar_sender.send(ProgressBarMsg::SetVisible(false));
 
-                                            if let InstallerUpdate::UnpackingFinished = &state {
-                                                sender.input(ComponentVersionMsg::SetState(VersionState::Downloaded));
-                                                sender.output(ComponentGroupMsg::CallOnDownloaded);
-                                            }
+                                                if let InstallerUpdate::UnpackingFinished = &state {
+                                                    sender.input(ComponentVersionMsg::SetState(VersionState::Downloaded));
+                                                    sender.output(ComponentGroupMsg::CallOnDownloaded);
+                                                }
 
-                                            else {
-                                                sender.input(ComponentVersionMsg::SetState(VersionState::NotDownloaded));
-                                            }
-                                        },
+                                                else {
+                                                    sender.input(ComponentVersionMsg::SetState(VersionState::NotDownloaded));
+                                                }
+                                            },
 
-                                        _ => ()
-                                    }
+                                            _ => ()
+                                        }
 
-                                    progress_bar_sender.send(ProgressBarMsg::UpdateFromState(state));
-                                });
-                            }));
+                                        progress_bar_sender.send(ProgressBarMsg::UpdateFromState(state));
+                                    });
+                                }
+                            ));
                         }
                     }
 

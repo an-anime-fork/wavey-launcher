@@ -1,5 +1,4 @@
 use std::io::Read;
-use std::thread;
 use relm4::{
     prelude::*,
     actions::*,
@@ -42,11 +41,11 @@ use image::{GenericImageView};
 use std::sync::LazyLock;
 use gtk::gio;
 
-struct launcher_systray {
+struct LauncherSystray {
     sender: ComponentSender<App>,
 }
 
-impl ksni::Tray for launcher_systray {
+impl ksni::Tray for LauncherSystray {
     fn id(&self) -> String {
         env!("CARGO_PKG_NAME").into()
     }
@@ -463,11 +462,14 @@ impl SimpleComponent for App {
                                         connect_clicked[sender] => move |_| {
                                             sender.input(AppMsg::DisableKillGameButton(true));
 
-                                            std::thread::spawn(clone!(@strong sender => move || {
-                                                std::thread::sleep(std::time::Duration::from_secs(3));
+                                            std::thread::spawn(clone!(
+                                                #[strong] sender,
+                                                move || {
+                                                    std::thread::sleep(std::time::Duration::from_secs(3));
 
-                                                sender.input(AppMsg::DisableKillGameButton(false));
-                                            }));
+                                                    sender.input(AppMsg::DisableKillGameButton(false));
+                                                }
+                                            ));
 
                                             let result = std::process::Command::new("pkill")
                                                 .arg("-f") // full text search
@@ -568,21 +570,22 @@ impl SimpleComponent for App {
         }
 
         // KDE StatusNotifierItem systray icon
-        let systray = std::thread::spawn(clone!(@strong sender => move || {
-            let tray = launcher_systray {
-                sender: sender
-            };
-            let spawned = tray.spawn().unwrap();
-            loop {
-                std::thread::park()
-            }
-        }));
+        let systray = std::thread::spawn(clone!(
+            #[strong] sender,
+            move || {
+                let tray = LauncherSystray { sender: sender };
+                let spawned = tray.spawn().unwrap();
+                loop { std::thread::park() }
+            })
+        );
 
         let mut group = RelmActionGroup::<WindowActionGroup>::new();
 
         // TODO: reduce code somehow
 
-        group.add_action::<LauncherFolder>(RelmAction::new_stateless(clone!(@strong sender => move |_| {
+        group.add_action::<LauncherFolder>(RelmAction::new_stateless(clone!(
+            #[strong] sender,
+            move |_| {
             if let Err(err) = open::that(LAUNCHER_FOLDER.as_path()) {
                 sender.input(AppMsg::Toast {
                     title: tr!("launcher-folder-opening-error"),
@@ -593,7 +596,9 @@ impl SimpleComponent for App {
             }
         })));
 
-        group.add_action::<GameFolder>(RelmAction::new_stateless(clone!(@strong sender => move |_| {
+        group.add_action::<GameFolder>(RelmAction::new_stateless(clone!(
+            #[strong] sender,
+            move  |_| {
             let path = match Config::get() {
                 Ok(config) => config.game.path.for_edition(config.launcher.edition).to_path_buf(),
                 Err(_) => CONFIG.game.path.for_edition(CONFIG.launcher.edition).to_path_buf()
@@ -609,7 +614,9 @@ impl SimpleComponent for App {
             }
         })));
 
-        group.add_action::<ConfigFile>(RelmAction::new_stateless(clone!(@strong sender => move |_| {
+        group.add_action::<ConfigFile>(RelmAction::new_stateless(clone!(
+            #[strong] sender,
+            move |_| {
             if let Ok(file) = config_file() {
                 if let Err(err) = open::that(file) {
                     sender.input(AppMsg::Toast {
@@ -622,16 +629,19 @@ impl SimpleComponent for App {
             }
         })));
 
-        group.add_action::<DebugFile>(RelmAction::new_stateless(clone!(@strong sender => move |_| {
-            if let Err(err) = open::that(crate::DEBUG_FILE.as_os_str()) {
-                sender.input(AppMsg::Toast {
-                    title: tr!("debug-file-opening-error"),
-                    description: Some(err.to_string())
-                });
+        group.add_action::<DebugFile>(RelmAction::new_stateless(clone!(
+            #[strong] sender,
+            move |_| {
+                if let Err(err) = open::that(crate::DEBUG_FILE.as_os_str()) {
+                    sender.input(AppMsg::Toast {
+                        title: tr!("debug-file-opening-error"),
+                        description: Some(err.to_string())
+                    });
 
-                tracing::error!("Failed to open debug file: {err}");
+                    tracing::error!("Failed to open debug file: {err}");
+                }
             }
-        })));
+        )));
 
         group.add_action::<About>(RelmAction::new_stateless(move |_| {
             about_dialog_broker.send(AboutDialogMsg::Show);
@@ -672,20 +682,23 @@ impl SimpleComponent for App {
                     self.disabled_buttons = true;
                 }
 
-                let updater = clone!(@strong sender => move |state| {
-                    if show_status_page {
-                        match state {
-                            StateUpdating::Components => {
-                                // tr!("loading-launcher-state--components")
-                                sender.input(AppMsg::SetLoadingStatus(Some(Some(String::from("Components")))));
-                            }
+                let updater = clone!(
+                    #[strong] sender,
+                    move |state| {
+                        if show_status_page {
+                            match state {
+                                StateUpdating::Components => {
+                                    // tr!("loading-launcher-state--components")
+                                    sender.input(AppMsg::SetLoadingStatus(Some(Some(String::from("Components")))));
+                                }
 
-                            StateUpdating::Game => {
-                                sender.input(AppMsg::SetLoadingStatus(Some(Some(tr!("loading-launcher-state--game")))));
+                                StateUpdating::Game => {
+                                    sender.input(AppMsg::SetLoadingStatus(Some(Some(tr!("loading-launcher-state--game")))));
+                                }
                             }
                         }
                     }
-                });
+                );
 
                 let state = match LauncherState::get_from_config(updater) {
                     Ok(state) => Some(state),

@@ -54,6 +54,10 @@ impl ksni::Tray for LauncherSystray {
         tr!("application-name").into()
     }
 
+    fn activate(&mut self, _x: i32, _y: i32) {
+        self.sender.input(AppMsg::ToggleWindow)
+    }
+
     fn icon_pixmap(&self) -> Vec<ksni::Icon> {
         // Directly taken from the ksni example code
         static ICON: LazyLock<ksni::Icon> = LazyLock::new(|| {
@@ -767,7 +771,11 @@ impl SimpleComponent for App {
 
             AppMsg::PerformAction => unsafe {
                 match self.state.as_ref().unwrap_unchecked() {
-                    LauncherState::Launch => launch::launch(sender),
+                    LauncherState::Launch => {
+                        tracing::info!("time check ui main");
+                        launch::launch(sender);
+                        tracing::info!("time check ui main exit");
+                    },
 
                     LauncherState::WineNotInstalled => download_wine::download_wine(sender, self.progress_bar.sender().to_owned()),
                     LauncherState::PrefixNotExists => create_prefix::create_prefix(sender),

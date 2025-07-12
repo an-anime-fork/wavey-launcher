@@ -15,7 +15,7 @@ lto = true
 opt-level = "s"
 
 [build-dependencies]
-glib-build-tools = "0.19"
+glib-build-tools = "0.20"
 
 [dependencies.anime-launcher-sdk]
 git = "https://github.com/an-anime-fork/anime-launcher-sdk"
@@ -50,12 +50,6 @@ unic-langid = "0.9"
 human-panic = "2.0.2"
 microxdg = "0.2.0"
 
-#betrayer = "0.4.1"
-#tray-icon = "0.21.0"
-#tao = "0.34.0"
-#mio = "1.0.4"
-
 ksni = { version = "0.3.1", features = ["blocking"] }
-event-listener = "5.4.0"
 image = "0.25.6"
-image-toolbox = "0.1.1"
+notify = "8.1.0"

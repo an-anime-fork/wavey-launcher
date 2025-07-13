@@ -143,7 +143,9 @@ pub struct App {
     downloading: bool,
     disabled_buttons: bool,
     kill_game_button: bool,
-    disabled_kill_game_button: bool
+    disabled_kill_game_button: bool,
+
+    game_is_running: bool
 }
 
 #[derive(Debug)]
@@ -171,6 +173,7 @@ pub enum AppMsg {
     SetLauncherStyle(LauncherStyle),
     SetLoadingStatus(Option<Option<String>>),
 
+    SetGameIsRunningState(bool),
     SetDownloading(bool),
     DisableButtons(bool),
     SetKillGameButton(bool),
@@ -547,7 +550,8 @@ impl SimpleComponent for App {
             downloading: false,
             disabled_buttons: false,
             kill_game_button: false,
-            disabled_kill_game_button: false
+            disabled_kill_game_button: false,
+            game_is_running: false
         };
 
         model.progress_bar.widget().set_halign(gtk::Align::Center);
@@ -749,6 +753,10 @@ impl SimpleComponent for App {
 
             AppMsg::SetDownloading(state) => {
                 self.downloading = state;
+            }
+
+            AppMsg::SetGameIsRunningState(state) => {
+                self.game_is_running = state;
             }
 
             AppMsg::DisableButtons(state) => {

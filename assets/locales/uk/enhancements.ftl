@@ -34,6 +34,15 @@ performance = Картопля
 gamemode = Gamemode
 gamemode-description = Ставити грі вищий пріоритет над процесами
 
+xalia = Xalia Glyphs
+xalia-description = Toggle for Proton's Xalia glyph override capability (may not work everywhere)
+
+obs-vkcapture = OBS Vulkan Capture Layer
+obs-vkcapture-description = Toggle for the OBS VkCapture layer, allowing for accelerated Vulkan frame capture
+
+force-raytrace = Force-Enable Ray Tracing
+force-raytrace-description = Override the GPU descriptor to force the game to allow Ray Tracing
+
 gamescope = Gamescope
 gamescope-description = Програма від Valve, яка дозволяє запускати програми в ізольовоному середевощі Xwayland і підтримує відеокарти від AMD, Intel, та Nvidia
 

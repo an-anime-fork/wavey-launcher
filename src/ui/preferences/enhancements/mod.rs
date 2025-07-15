@@ -419,6 +419,69 @@ impl SimpleAsyncComponent for EnhancementsApp {
                 },*/
 
                 adw::ActionRow {
+                    set_title: &tr!("xalia"),
+                    set_subtitle: &tr!("xalia-description"),
+
+                    add_suffix = &gtk::Switch {
+                        set_valign: gtk::Align::Center,
+
+                        set_active: CONFIG.game.enhancements.xalia,
+
+                        connect_state_notify => |switch| {
+                            if is_ready() {
+                                if let Ok(mut config) = Config::get() {
+                                    config.game.enhancements.xalia = switch.is_active();
+
+                                    Config::update(config);
+                                }
+                            }
+                        }
+                    }
+                },
+
+                adw::ActionRow {
+                    set_title: &tr!("obs-vkcapture"),
+                    set_subtitle: &tr!("obs-vkcapture-description"),
+
+                    add_suffix = &gtk::Switch {
+                        set_valign: gtk::Align::Center,
+
+                        set_active: CONFIG.game.enhancements.obs_vkcapture,
+
+                        connect_state_notify => |switch| {
+                            if is_ready() {
+                                if let Ok(mut config) = Config::get() {
+                                    config.game.enhancements.obs_vkcapture = switch.is_active();
+
+                                    Config::update(config);
+                                }
+                            }
+                        }
+                    }
+                },
+
+                adw::ActionRow {
+                    set_title: &tr!("force-raytrace"),
+                    set_subtitle: &tr!("force-raytrace-description"),
+
+                    add_suffix = &gtk::Switch {
+                        set_valign: gtk::Align::Center,
+
+                        set_active: CONFIG.game.enhancements.force_raytrace,
+
+                        connect_state_notify => |switch| {
+                            if is_ready() {
+                                if let Ok(mut config) = Config::get() {
+                                    config.game.enhancements.force_raytrace = switch.is_active();
+
+                                    Config::update(config);
+                                }
+                            }
+                        }
+                    }
+                },
+
+                adw::ActionRow {
                     set_title: &tr!("gamemode"),
                     set_subtitle: &tr!("gamemode-description"),
 

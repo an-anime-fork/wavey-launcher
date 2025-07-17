@@ -1,7 +1,7 @@
 use relm4::prelude::*;
 use gtk::prelude::*;
 use adw::prelude::*;
-
+use gtk::builders::PopoverBuilder;
 use anime_launcher_sdk::wincompatlib::prelude::*;
 
 use anime_launcher_sdk::components::*;
@@ -90,7 +90,24 @@ impl SimpleAsyncComponent for ComponentsPage {
 
                                 #[watch]
                                 set_visible: model.selecting_wine_version
-                            }
+                            },
+                            add_suffix = &gtk::Popover {
+                                set_position: gtk::PositionType::Right,
+
+                                gtk::Box {
+                                    set_orientation: gtk::Orientation::Horizontal,
+                                    set_spacing: 5,
+
+                                    gtk::Label {
+                                        set_text: "Updating Wine Prefix",
+                                        set_margin_start: 5,
+                                        set_margin_end: 5,
+                                    },
+                                },
+
+                                #[watch]
+                                set_visible: model.selecting_wine_version
+                            },
                         },
 
                         adw::ActionRow {

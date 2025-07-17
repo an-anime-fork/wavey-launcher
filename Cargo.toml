@@ -15,7 +15,7 @@ lto = true
 opt-level = "s"
 
 [build-dependencies]
-glib-build-tools = "0.20"
+glib-build-tools = "0.21"
 
 [dependencies.anime-launcher-sdk]
 git = "https://github.com/an-anime-fork/anime-launcher-sdk"
@@ -30,7 +30,7 @@ relm4 = { version = "0.9.1", features = ["macros", "libadwaita"] }
 gtk = { package = "gtk4", version = "0.9.6", features = ["v4_16"] }
 adw = { package = "libadwaita", version = "0.7.2", features = ["v1_5"] }
 
-rfd = { version = "0.15.3", features = ["xdg-portal", "tokio"], default-features = false }
+rfd = { version = "0.15.4", features = ["xdg-portal", "tokio"], default-features = false }
 open = "5.3.2"
 whatadistro = "0.1.0"
 

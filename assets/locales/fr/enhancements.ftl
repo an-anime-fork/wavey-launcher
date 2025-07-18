@@ -1,47 +1,47 @@
-game-settings-description = Gère les paramètres en jeu et les sessions
-sandbox-settings-description = Lance le jeu dans une sandbox bubblewrap, qui fonctionne comme Flatpak
+game-settings-description = Gestion des paramètres de jeu et des sessions
+sandbox-settings-description = Lance le jeu dans une boîte à sable bubblewrap, similaire à Flatpak
 environment-settings-description = Spécifie les variables d'environnement et la commande qui lance le jeu
 
 wine = Wine
 
 synchronization = Synchronisation
-wine-sync-description = Technologie utilisé pour synchroniser les évènements wine internes
+wine-sync-description = Technologie de synchronisation des évènements système internes à Wine
 
 language = Langue
-wine-lang-description = Langue utilisé dans l'environnement wine. Peut résoudre des problèmes de clavier
+wine-lang-description = Langue utilisé dans l'environnement Wine. Peut résoudre certains problèmes d'entrée clavier.
 system = Système
 
 borderless-window = Utiliser une fenêtre sans bordure
 virtual-desktop = Bureau virtuel
 
-map-drive-c = Map drive C:
-map-drive-c-description = Automatically symlink drive_c folder from the wine prefix to the dosdevices
+map-drive-c = Assignation du lecteur C:
+map-drive-c-description = Lier symboliquement le dossier drive_c du préfixe wine vers dosdevices automatiquement
 
-map-game-folder = Map game folder
-map-game-folder-description = Automatically symlink game folder to the dosdevices
+map-game-folder = Assignation du dossier de jeu
+map-game-folder-description = Lier symboliquement le dossier du jeu vers dosdevices automatiquement
 
 game = Jeu
 
 hud = HUD
 
 fsr = FSR
-fsr-description = Permet d'upscale le jeu à la taille de l'écran. Pour l'utiliser, sélectionnez une résolution plus basse en jeu, et appuyez sur Alt+Entrée
-ultra-quality = Qualité ultra
+fsr-description = Permet d'upscaler le jeu à la taille de l'écran. Pour l'utiliser, sélectionnez une résolution plus basse en jeu, et appuyez sur Alt+Entrée
+ultra-quality = Balèze
 quality = Qualité
 balanced = Équilibré
-performance = Performances
+performance = Performance
 
 gamemode = Gamemode
 gamemode-description = Donne la priorité au jeu sur le reste des processus du système
 
-xalia = Xalia Glyphs
+xalia = Glyphes Xalia
 xalia-description = Toggle for Proton's Xalia glyph override capability (may not work everywhere)
 
-obs-vkcapture = OBS Vulkan Capture Layer
-obs-vkcapture-description = Toggle for the OBS VkCapture layer, allowing for accelerated Vulkan frame capture
+obs-vkcapture = Capture de rendu Vulkan vers OBS
+obs-vkcapture-description = Active la couche de capture accélérée de rendu Vulkan pour OBS (VkCapture).
 
-force-raytrace = Force-Enable Ray Tracing
-force-raytrace-description = Override the GPU descriptor to force the game to allow Ray Tracing
+force-raytrace = Activation forcée des technologies de Ray-Tracing
+force-raytrace-description = Impose un identifiant de carte graphique avec RT. Ceci rendra les options RT accessibles, même si votre carte graphique ne les supporte pas.
 
 gamescope = Gamescope
 gamescope-description = Gamescope est un outil fait par Valve qui permet aux jeux de se lancer dans une instance Xwayland isolée, et qui est compatible avec les cartes graphiques AMD, Intel et NVidia

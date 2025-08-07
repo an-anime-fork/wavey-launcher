@@ -103,6 +103,12 @@ pub fn launch(sender: ComponentSender<App>) {
 
             // Show back launcher window if behavior set to "Hide" and the game has closed
             LauncherBehavior::Hide => sender.input(AppMsg::ShowWindow),
+            
+            // Show Window again but automatically start a 10-second (customisable) timer to
+            // auto-close the launcher after the game closes
+            //LauncherBehavior::CloseUnlessAction => {
+            //    sender.input(AppMsg::ShowWindowWithAutoClose),
+            //}
 
             // Show Window again but automatically start a 10-second (customisable) timer to
             // auto-close the launcher after the game closes

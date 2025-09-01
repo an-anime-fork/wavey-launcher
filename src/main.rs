@@ -216,6 +216,7 @@ fn main() -> anyhow::Result<()> {
     gtk::glib::set_program_name(Some(&tr!("application-name")));
 
     //while !DEBUG_HALTER.exists() { /* noop */ }
+    steam::hwcheck_is_deck();
 
     // Quirk: early detection of Steam Environment
     if steam::is_in_steam_startup_phase() {

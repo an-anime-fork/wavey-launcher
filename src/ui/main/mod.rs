@@ -186,6 +186,7 @@ pub enum AppMsg {
 
     HideWindow,
     ShowWindow,
+    //ShowWindowWithAutoClose,
     ToggleWindow,
 
     Toast {

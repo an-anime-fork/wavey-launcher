@@ -17,7 +17,6 @@ pub struct DefaultPathsApp {
 
     launcher: PathBuf,
     runners: PathBuf,
-    dxvks: PathBuf,
     prefix: PathBuf,
     game_global: PathBuf,
     game_china: PathBuf,
@@ -29,7 +28,6 @@ pub struct DefaultPathsApp {
 pub enum Folders {
     Launcher,
     Runners,
-    DXVK,
     Prefix,
     GameGlobal,
     GameChina,
@@ -122,20 +120,6 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                     set_subtitle: model.runners.to_str().unwrap(),
 
                     connect_activated => DefaultPathsAppMsg::ChoosePath(Folders::Runners),
-
-                    add_prefix = &gtk::Image {
-                        set_icon_name: Some("folder-symbolic")
-                    }
-                },
-
-                adw::ActionRow {
-                    set_title: &tr!("dxvks-folder"),
-                    set_activatable: true,
-
-                    #[watch]
-                    set_subtitle: model.dxvks.to_str().unwrap(),
-
-                    connect_activated => DefaultPathsAppMsg::ChoosePath(Folders::DXVK),
 
                     add_prefix = &gtk::Image {
                         set_icon_name: Some("folder-symbolic")
@@ -288,7 +272,6 @@ impl SimpleAsyncComponent for DefaultPathsApp {
 
             launcher: LAUNCHER_FOLDER.to_path_buf(),
             runners: CONFIG.game.wine.builds.clone(),
-            dxvks: CONFIG.game.dxvk.builds.clone(),
             prefix: CONFIG.game.wine.prefix.clone(),
             game_global: CONFIG.game.path.global.clone(),
             game_china: CONFIG.game.path.china.clone(),
@@ -321,7 +304,6 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                     match folder {
                         Folders::Launcher => {
                             self.runners     = result.join("runners");
-                            self.dxvks       = result.join("dxvks");
                             self.prefix      = result.join("prefix");
                             self.game_global = result.join("Wuthering Waves");
                             self.game_china  = result.join("Wuthering Waves China");
@@ -333,7 +315,6 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                         }
 
                         Folders::Runners    => self.runners     = result,
-                        Folders::DXVK       => self.dxvks       = result,
                         Folders::Prefix     => self.prefix      = result,
                         Folders::GameGlobal => self.game_global = result,
                         Folders::GameChina  => self.game_china  = result,
@@ -356,7 +337,6 @@ impl SimpleAsyncComponent for DefaultPathsApp {
 
                             let folders = [
                                 (old_config.game.wine.builds, &self.runners),
-                                (old_config.game.dxvk.builds, &self.dxvks),
                                 (old_config.game.wine.prefix, &self.prefix),
                                 (old_config.game.path.global, &self.game_global),
                                 (old_config.game.path.china,  &self.game_china),
@@ -417,7 +397,6 @@ impl DefaultPathsApp {
         let mut config = Config::get()?;
 
         config.game.wine.builds.clone_from(&self.runners);
-        config.game.dxvk.builds.clone_from(&self.dxvks);
         config.game.wine.prefix.clone_from(&self.prefix);
         config.game.path.global.clone_from(&self.game_global);
         config.game.path.china.clone_from(&self.game_china);

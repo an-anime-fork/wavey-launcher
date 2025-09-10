@@ -359,7 +359,6 @@ impl SimpleAsyncComponent for EnhancementsApp {
                     #[wrap(Some)]
                     set_model = &gtk::StringList::new(&[
                         &tr!("none"),
-                        "DXVK",
                         "MangoHud"
                     ]),
 

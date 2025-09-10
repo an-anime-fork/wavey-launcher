@@ -34,16 +34,6 @@ impl From<wine::Group> for ComponentsListGroup {
     }
 }
 
-impl From<dxvk::Group> for ComponentsListGroup {
-    #[inline]
-    fn from(group: dxvk::Group) -> Self {
-        Self {
-            title: group.title,
-            versions: group.versions.into_iter().map(|version| version.into()).collect()
-        }
-    }
-}
-
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ComponentsListVersion {
     pub name: String,
@@ -70,19 +60,3 @@ impl From<wine::Version> for ComponentsListVersion {
     }
 }
 
-impl From<dxvk::Version> for ComponentsListVersion {
-    #[inline]
-    fn from(version: dxvk::Version) -> Self {
-        Self {
-            recommended: match version.version_features() {
-                Some(features) => features.recommended,
-                None => true
-            },
-
-            name: version.name,
-            title: version.title,
-            uri: version.uri,
-            format: version.format
-        }
-    }
-}

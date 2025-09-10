@@ -25,13 +25,10 @@ pub struct DownloadComponentsApp {
     progress_bar: AsyncController<ProgressBar>,
 
     wine_combo: adw::ComboRow,
-    dxvk_combo: adw::ComboRow,
 
     wine_versions: Vec<wine::Version>,
-    dxvk_versions: Vec<dxvk::Version>,
 
     selected_wine: Option<wine::Version>,
-    selected_dxvk: Option<dxvk::Version>,
 
     /// `None` - default,
     /// `Some(false)` - processing,
@@ -45,16 +42,6 @@ pub struct DownloadComponentsApp {
     creating_prefix: Option<bool>,
     creating_prefix_path: String,
 
-    /// `None` - default,
-    /// `Some(false)` - processing,
-    /// `Some(true)` - done
-    downloading_dxvk: Option<bool>,
-    downloading_dxvk_version: String,
-
-    /// `None` - default,
-    /// `Some(false)` - processing,
-    /// `Some(true)` - done
-    applying_dxvk: Option<bool>,
 
     downloading: bool
 }
@@ -64,8 +51,6 @@ pub enum DownloadComponentsAppMsg {
     UpdateVersionsLists,
     DownloadWine,
     CreatePrefix,
-    DownloadDXVK,
-    ApplyDXVK,
     Continue,
     Exit
 }
@@ -108,16 +93,6 @@ impl SimpleAsyncComponent for DownloadComponentsApp {
                         .as_slice()))
                 },
 
-                #[local_ref]
-                dxvk_combo -> adw::ComboRow {
-                    set_title: &tr!("dxvk-version"),
-
-                    #[watch]
-                    set_model: Some(&gtk::StringList::new(model.dxvk_versions.iter()
-                        .map(|version| version.name.as_ref())
-                        .collect::<Vec<&str>>()
-                        .as_slice()))
-                }
             },
 
             add = &adw::PreferencesGroup {
@@ -200,49 +175,6 @@ impl SimpleAsyncComponent for DownloadComponentsApp {
                         set_visible: model.creating_prefix == Some(false),
                     }
                 },
-
-                adw::ActionRow {
-                    set_title: &tr!("download-dxvk"),
-
-                    #[watch]
-                    set_subtitle: &model.downloading_dxvk_version,
-
-                    add_prefix = &gtk::Image {
-                        #[watch]
-                        set_icon_name: match model.downloading_dxvk {
-                            Some(true) => Some("emblem-ok-symbolic"),
-                            Some(false) => None, // Some("process-working"),
-                            None => None
-                        }
-                    },
-
-                    add_prefix = &gtk::Spinner {
-                        set_spinning: true,
-
-                        #[watch]
-                        set_visible: model.downloading_dxvk == Some(false),
-                    }
-                },
-
-                adw::ActionRow {
-                    set_title: &tr!("apply-dxvk"),
-
-                    add_prefix = &gtk::Image {
-                        #[watch]
-                        set_icon_name: match model.applying_dxvk {
-                            Some(true) => Some("emblem-ok-symbolic"),
-                            Some(false) => None, // Some("process-working"),
-                            None => None
-                        }
-                    },
-
-                    add_prefix = &gtk::Spinner {
-                        set_spinning: true,
-
-                        #[watch]
-                        set_visible: model.applying_dxvk == Some(false),
-                    }
-                }
             },
 
             add = &adw::PreferencesGroup {
@@ -276,13 +208,10 @@ impl SimpleAsyncComponent for DownloadComponentsApp {
                 .detach(),
 
             wine_combo: adw::ComboRow::new(),
-            dxvk_combo: adw::ComboRow::new(),
 
             wine_versions: vec![],
-            dxvk_versions: vec![],
 
             selected_wine: None,
-            selected_dxvk: None,
 
             downloading_wine: None,
             downloading_wine_version: String::new(),
@@ -290,10 +219,6 @@ impl SimpleAsyncComponent for DownloadComponentsApp {
             creating_prefix: None,
             creating_prefix_path: String::new(),
 
-            downloading_dxvk: None,
-            downloading_dxvk_version: String::new(),
-
-            applying_dxvk: None,
 
             downloading: false
         };
@@ -301,7 +226,6 @@ impl SimpleAsyncComponent for DownloadComponentsApp {
         model.progress_bar.widget().set_width_request(360);
 
         let wine_combo = &model.wine_combo;
-        let dxvk_combo = &model.dxvk_combo;
 
         let widgets = view_output!();
 
@@ -320,12 +244,6 @@ impl SimpleAsyncComponent for DownloadComponentsApp {
                     .flat_map(|group| group.versions.into_iter().take(4))
                     .collect();
 
-                // 4 latest versions of 4 first available dxvk group
-                self.dxvk_versions = dxvk::get_groups(&config.components.path).unwrap()
-                    .into_iter()
-                    .take(4)
-                    .flat_map(|group| group.versions.into_iter().take(4))
-                    .collect();
             }
 
             #[allow(unused_must_use)]
@@ -333,10 +251,8 @@ impl SimpleAsyncComponent for DownloadComponentsApp {
                 let config = Config::get().unwrap_or_else(|_| CONFIG.clone());
 
                 self.selected_wine = Some(self.wine_versions[self.wine_combo.selected() as usize].clone());
-                self.selected_dxvk = Some(self.dxvk_versions[self.dxvk_combo.selected() as usize].clone());
 
                 self.downloading_wine_version = self.selected_wine.clone().unwrap().title;
-                self.downloading_dxvk_version = self.selected_dxvk.clone().unwrap().name;
                 self.creating_prefix_path     = config.game.wine.prefix.to_string_lossy().to_string();
 
                 self.downloading = true;
@@ -458,8 +374,8 @@ impl SimpleAsyncComponent for DownloadComponentsApp {
 
                 std::thread::spawn(move || {
                     match wine.init_prefix(None::<&str>) {
-                        // Download DXVK
-                        Ok(_) => sender.input(DownloadComponentsAppMsg::DownloadDXVK),
+                        // Aight we good
+                        Ok(_) => sender.input(DownloadComponentsAppMsg::Continue),
 
                         Err(err) => {
                             tracing::error!("Failed to create prefix: {err}");
@@ -471,143 +387,6 @@ impl SimpleAsyncComponent for DownloadComponentsApp {
                         }
                     }
                 });
-            }
-
-            #[allow(unused_must_use)]
-            DownloadComponentsAppMsg::DownloadDXVK => {
-                self.creating_prefix = Some(true);
-                self.downloading_dxvk = Some(false);
-
-                let config = Config::get().unwrap_or_else(|_| CONFIG.clone());
-
-                let dxvk = self.selected_dxvk.clone().unwrap();
-                let progress_bar_input = self.progress_bar.sender().clone();
-
-                if dxvk.is_downloaded_in(&config.game.dxvk.builds) {
-                    tracing::info!("DXVK is already downloaded: {}", dxvk.name);
-
-                    sender.input(DownloadComponentsAppMsg::ApplyDXVK);
-                }
-
-                else {
-                    std::thread::spawn(move || {
-                        // Install DXVK
-                        tracing::info!("Installing DXVK: {}", dxvk.name);
-
-                        match get_installer(&dxvk.uri, config.launcher.temp.clone()) {
-                            Ok(mut installer) => {
-                                let progress_bar_input = progress_bar_input.clone();
-                                let sender = sender.clone();
-
-                                // Create DXVK builds folder
-                                if config.game.dxvk.builds.exists() {
-                                    std::fs::create_dir_all(&config.game.dxvk.builds)
-                                        .expect("Failed to create DXVK builds directory");
-                                }
-
-                                installer.install(&config.game.dxvk.builds, move |update| {
-                                    match &update {
-                                        InstallerUpdate::DownloadingError(err) => {
-                                            tracing::error!("Failed to download dxvk: {err}");
-
-                                            sender.output(Self::Output::Toast {
-                                                title: tr!("dxvk-download-error"),
-                                                description: Some(err.to_string())
-                                            });
-                                        }
-
-                                        InstallerUpdate::UnpackingError(err) => {
-                                            tracing::error!("Failed to unpack dxvk: {err}");
-    
-                                            sender.output(Self::Output::Toast {
-                                                title: tr!("dxvk-unpack-error"),
-                                                description: Some(err.clone())
-                                            });
-                                        }
-
-                                        // Apply DXVK
-                                        InstallerUpdate::UnpackingFinished => {
-                                            sender.input(DownloadComponentsAppMsg::ApplyDXVK);
-                                        }
-
-                                        _ => ()
-                                    }
-
-                                    progress_bar_input.send(ProgressBarMsg::UpdateFromState(update));
-                                });
-                            }
-
-                            Err(err) => {
-                                tracing::error!("Failed to initialize dxvk installer: {err}");
-
-                                sender.output(Self::Output::Toast {
-                                    title: tr!("dxvk-install-failed"),
-                                    description: Some(err.to_string())
-                                });
-                            }
-                        }
-                    });
-                }
-            }
-
-            #[allow(unused_must_use)]
-            DownloadComponentsAppMsg::ApplyDXVK => {
-                self.downloading_dxvk = Some(true);
-                self.applying_dxvk = Some(false);
-
-                let config = Config::get().unwrap_or_else(|_| CONFIG.clone());
-
-                tracing::info!("Applying DXVK");
-
-                let wine = self.selected_wine.clone().unwrap();
-                let dxvk = self.selected_dxvk.clone().unwrap();
-
-                let group = wine.find_group(&config.components.path).unwrap().unwrap();
-
-                // Apply DXVK if we need it
-                if wine.features_in(&group).unwrap_or_default().need_dxvk {
-                    let wine = wine
-                        .to_wine(config.components.path, Some(config.game.wine.builds.join(&wine.name)))
-                        .with_loader(WineLoader::Current)
-                        .with_arch(WineArch::Win64)
-                        .with_prefix(config.game.wine.prefix);
-
-                    std::thread::spawn(move || {
-                        let params = InstallParams {
-                            // We just created prefix so don't need to repair it
-                            repair_dlls: false,
-
-                            ..InstallParams::default()
-                        };
-
-                        let UnifiedWine::Default(wine) = wine else {
-                            sender.input(DownloadComponentsAppMsg::Continue);
-
-                            return;
-                        };
-
-                        match wine.install_dxvk(config.game.dxvk.builds.join(&dxvk.name), params) {
-                            // Go to next page
-                            Ok(_) => sender.input(DownloadComponentsAppMsg::Continue),
-
-                            Err(err) => {
-                                tracing::error!("Failed to apply DXVK: {err}");
-
-                                sender.output(Self::Output::Toast {
-                                    title: tr!("dxvk-apply-error"),
-                                    description: Some(err.to_string())
-                                });
-                            }
-                        }
-                    });
-                }
-
-                // Skip DXVK applying if we don't need it
-                else {
-                    tracing::info!("Selected wine version has `need_dxvk = false` feature. Skipping DXVK applying...");
-
-                    sender.input(DownloadComponentsAppMsg::Continue);
-                }
             }
 
             #[allow(unused_must_use)]

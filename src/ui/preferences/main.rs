@@ -97,7 +97,6 @@ impl SimpleAsyncComponent for PreferencesApp {
         model.enhancements.emit(EnhancementsAppMsg::SetGamescopeParent);
 
         model.general.emit(GeneralAppMsg::UpdateDownloadedWine);
-        model.general.emit(GeneralAppMsg::UpdateDownloadedDxvk);
 
         AsyncComponentParts { model, widgets }
     }

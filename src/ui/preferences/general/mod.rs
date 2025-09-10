@@ -41,7 +41,6 @@ pub enum GeneralAppMsg {
     // SetMainPatch(Option<(Version, JadeitePatchStatusVariant)>),
 
     UpdateDownloadedWine,
-    UpdateDownloadedDxvk,
 
     OpenMigrateInstallation,
     RepairGame,
@@ -488,12 +487,6 @@ impl SimpleAsyncComponent for GeneralApp {
             GeneralAppMsg::UpdateDownloadedWine => {
                 self.components_page.sender()
                     .send(ComponentsPageMsg::UpdateDownloadedWine)
-                    .unwrap();
-            }
-
-            GeneralAppMsg::UpdateDownloadedDxvk => {
-                self.components_page.sender()
-                    .send(ComponentsPageMsg::UpdateDownloadedDxvk)
                     .unwrap();
             }
 

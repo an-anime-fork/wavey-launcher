@@ -100,24 +100,6 @@ impl SimpleAsyncComponent for ComponentsPage {
                                 set_visible: model.selecting_wine_version
                             },
                         },
-
-                        adw::ActionRow {
-                            set_title: &tr!("recommended-only"),
-                            set_subtitle: &tr!("wine-recommended-description"),
-
-                            add_suffix = &gtk::Switch {
-                                set_valign: gtk::Align::Center,
-
-                                #[block_signal(wine_recommended_notify)]
-                                set_active: true,
-
-                                connect_state_notify[sender] => move |switch| {
-                                    if is_ready() {
-                                        sender.input(ComponentsPageMsg::WineRecommendedOnly(switch.is_active()));
-                                    }
-                                } @wine_recommended_notify
-                            }
-                        }
                     },
                 }
             }

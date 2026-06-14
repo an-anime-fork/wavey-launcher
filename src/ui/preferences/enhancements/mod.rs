@@ -460,6 +460,27 @@ impl SimpleAsyncComponent for EnhancementsApp {
                 },
 
                 adw::ActionRow {
+                    set_title: &tr!("use-steamrt"),
+                    set_subtitle: &tr!("use-steamrt-description"),
+
+                    add_suffix = &gtk::Switch {
+                        set_valign: gtk::Align::Center,
+
+                        set_active: CONFIG.game.enhancements.force_raytrace,
+
+                        connect_state_notify => |switch| {
+                            if is_ready() {
+                                if let Ok(mut config) = Config::get() {
+                                    config.game.enhancements.force_raytrace = switch.is_active();
+
+                                    Config::update(config);
+                                }
+                            }
+                        }
+                    }
+                },
+
+                adw::ActionRow {
                     set_title: &tr!("force-raytrace"),
                     set_subtitle: &tr!("force-raytrace-description"),
 

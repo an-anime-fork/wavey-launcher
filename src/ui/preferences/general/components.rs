@@ -16,6 +16,7 @@ pub struct ComponentsPage {
     wine_components: AsyncController<ComponentsList<ComponentsPageMsg>>,
 
     downloaded_wine_versions: Vec<(wine::Version, wine::Features)>,
+    available_steamrt_versions: Vec<(wine::Version, wine::Features)>,
 
     selected_wine_version: u32,
 
@@ -118,6 +119,54 @@ impl SimpleAsyncComponent for ComponentsPage {
                                 } @wine_recommended_notify
                             }
                         }
+                    },
+                    add = &adw::PreferencesGroup {
+                        set_title: &tr!("steamrt-version"),
+
+                        adw::ComboRow {
+                            set_title: &tr!("selected-steamrt-version"),
+
+                            #[watch]
+                            #[block_signal(wine_selected_notify)]
+                            set_model: Some(&gtk::StringList::new(&model.downloaded_wine_versions.iter().map(|(version, _)| version.title.as_str()).collect::<Vec<&str>>())),
+
+                            #[watch]
+                            #[block_signal(wine_selected_notify)]
+                            set_selected: model.selected_wine_version,
+
+                            #[watch]
+                            set_activatable: !model.selecting_wine_version,
+
+                            connect_selected_notify[sender] => move |row| {
+                                if is_ready() {
+                                    sender.input(ComponentsPageMsg::SelectWine(row.selected() as usize));
+                                }
+                            } @wine_selected_notify,
+
+                            add_suffix = &gtk::Spinner {
+                                set_spinning: true,
+
+                                #[watch]
+                                set_visible: model.selecting_wine_version
+                            },
+                            add_suffix = &gtk::Popover {
+                                set_position: gtk::PositionType::Right,
+
+                                gtk::Box {
+                                    set_orientation: gtk::Orientation::Horizontal,
+                                    set_spacing: 5,
+
+                                    gtk::Label {
+                                        set_text: "Updating Wine Prefix",
+                                        set_margin_start: 5,
+                                        set_margin_end: 5,
+                                    },
+                                },
+
+                                #[watch]
+                                set_visible: model.selecting_wine_version
+                            },
+                        },
                     },
                 }
             }

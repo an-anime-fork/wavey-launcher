@@ -40,6 +40,9 @@ xalia-description = Toggle for Proton's Xalia glyph override capability (may not
 obs-vkcapture = OBS Vulkan Capture Layer
 obs-vkcapture-description = Toggle for the OBS VkCapture layer, allowing for accelerated Vulkan frame capture
 
+use-steamrt = Use SteamRT
+use-steamrt-description = Use the Steam Runtime (SteamRT) to launch Proton. This provides libraries such as codecs that Wuthering Waves expects.
+
 force-raytrace = Force-Enable Ray Tracing
 force-raytrace-description = Override the GPU descriptor to force the game to allow Ray Tracing
 

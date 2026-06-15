@@ -21,8 +21,6 @@ japanese = Японська
 korean = Корейська
 chinese = Китайська
 
-migrate-installation = Перенести лаунчер
-migrate-installation-description = Відкрити спеціальне вікно, в якому ви зможете перенести встановлену гру
 repair-game = Відновити гру
 
 status = Статус

@@ -20,8 +20,6 @@ japanese = Japonês
 korean = Coreano
 chinese = Chinês
 
-migrate-installation = Migrar instalação
-migrate-installation-description = Abra janela especial onde pide mudar a pasta de instalação
 repair-game = Reparar jogo
 
 status = Status

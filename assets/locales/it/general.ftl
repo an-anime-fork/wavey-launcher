@@ -21,8 +21,6 @@ japanese = Giapponese
 korean = Coreano
 chinese = Cinese
 
-migrate-installation = Migra installazione
-migrate-installation-description = Apri una finestra speciale dove puoi cambiare la cartella di installazione del gioco
 repair-game = Ripara il gioco
 
 status = Stato

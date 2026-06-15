@@ -21,8 +21,6 @@ japanese = 日本語
 korean = 韓国語
 chinese = 中国語
 
-migrate-installation = インストール場所を変更する。
-migrate-installation-description = ゲームのインストール先を変更できる、ウィンドウを表示します。
 repair-game = ゲームを修正する
 
 status = ステータス

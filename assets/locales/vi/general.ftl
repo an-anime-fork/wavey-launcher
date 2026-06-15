@@ -24,8 +24,6 @@ japanese = Tiếng Nhật
 korean = Tiếng Hàn
 chinese = Tiếng Trung
 
-migrate-installation = Di chuyển nơi cài đặt
-migrate-installation-description = Mở cửa sổ đặc biệt nơi bạn có thể thay đổi thư mục cài đặt trò chơi của mình
 repair-game = Sửa chữa
 
 status = Trạng thái

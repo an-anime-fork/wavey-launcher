@@ -21,8 +21,6 @@ japanese = Japonca
 korean = Korece
 chinese = Çince
 
-migrate-installation = Yüklemeyi aktar
-migrate-installation-description = Oyun yükleme yerinin değiştirilebileceği özel pencereyi aç
 repair-game = Oyunu tamir et
 
 status = Durum

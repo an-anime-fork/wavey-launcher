@@ -21,8 +21,6 @@ japanese = ภาษาญี่ปุ่น
 korean = ภาษาเกาหลี
 chinese = ภาษาจีน
 
-migrate-installation = ย้ายการติดตั้งเกม
-migrate-installation-description = เปิดหน้าต่างพิเศษที่คุณสามารถเปลี่ยนโฟลเดอร์การติดตั้งเกมของคุณได้
 repair-game = ซ่อมแซมการติดตั้งเกม
 
 status = สถานะ

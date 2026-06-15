@@ -4,15 +4,15 @@ classic = Classique
 update-background = Mise à jour automatique de l'image de fond
 update-background-description = Télécharger l'image de fond du launcher officiel. Vous pouvez la désactiver pour utiliser une image personnalisée à la place
 
-launcher-language = Langue du launcher
+launcher-language = Langue du lançeur
 launcher-language-description = S'applique après un redémarrage
 
 game-edition = Game edition
 global = Global
 china = China
 
-game-environment = Game environment
-game-environment-description = Get specific features like additional payment methods
+game-environment = Environnement de jeu
+game-environment-description = Processeur de paiement. Ne le changez pas, Epic sont faibles et Google sont malhabiles.
 
 game-voiceovers = Voiceover en jeu
 game-voiceovers-description = List of downloaded game voiceovers. You can select them in the game settings
@@ -21,8 +21,6 @@ japanese = Japonais
 korean = Coréen
 chinese = Chinois
 
-migrate-installation = Migrate installation
-migrate-installation-description = Open special window where you can change your game installation folder
 repair-game = Réparer le jeu
 
 status = Statut

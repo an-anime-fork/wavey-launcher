@@ -21,8 +21,6 @@ japanese = Japán
 korean = Koreai
 chinese = Kínai
 
-migrate-installation = Játékmappa migrálása
-migrate-installation-description = Megnyit egy ablakot amivel megváltoztathatod a játékmappádat
 repair-game = Játék javítása
 
 status = Státusz

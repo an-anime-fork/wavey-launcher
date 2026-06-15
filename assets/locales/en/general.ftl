@@ -21,8 +21,6 @@ japanese = Japanese
 korean = Korean
 chinese = Chinese
 
-migrate-installation = Migrate installation
-migrate-installation-description = Open special window where you can change your game installation folder
 repair-game = Repair game
 
 status = Status

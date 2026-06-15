@@ -11,7 +11,7 @@ height = Hauteur
 
 application-name = Colorful Waves
 
-launcher-folder = Složka launcheru Dossier du launcher
+launcher-folder = Dossier du launcher
 game-folder = Dossier du jeu
 config-file = Fichier de configuration
 debug-file = Fichier débug

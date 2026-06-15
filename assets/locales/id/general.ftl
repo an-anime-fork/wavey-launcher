@@ -21,8 +21,6 @@ japanese = Jepang
 korean = Korea
 chinese = Cina
 
-migrate-installation = Pindahkan installasi
-migrate-installation-description = Buka menu khusus untuk mengubah direktori installasi game
 repair-game = Perbaiki game
 
 status = Status

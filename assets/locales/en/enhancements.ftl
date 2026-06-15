@@ -37,6 +37,9 @@ gamemode-description = Prioritize the game over the rest of the processes
 xalia = Xalia Glyphs
 xalia-description = Toggle for Proton's Xalia glyph override capability (may not work everywhere)
 
+kg-kr-browser = Kuro Games Browser Override
+kg-kr-browser-description = Toggle for an experimental Kuro Games transparency override for their in-game browser part
+
 obs-vkcapture = OBS Vulkan Capture Layer
 obs-vkcapture-description = Toggle for the OBS VkCapture layer, allowing for accelerated Vulkan frame capture
 

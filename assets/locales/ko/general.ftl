@@ -21,8 +21,6 @@ japanese = 일본어
 korean = 한국어
 chinese = 중국어
 
-migrate-installation = 설치 마이그레이션
-migrate-installation-description = 게임 설치 폴더를 변경할 수 있는 특수 창 열기
 repair-game = 게임 복구
 
 status = 상태

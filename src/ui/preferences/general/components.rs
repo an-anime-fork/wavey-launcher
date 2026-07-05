@@ -280,6 +280,7 @@ impl SimpleAsyncComponent for ComponentsPage {
                                         config.game.wine.selected = Some(wine_name); 
 
                                         Config::update(config);
+                                        // Launch signal back to mainwindow to refresh launch button
                                     }
 
                                     Err(err) => {

@@ -19,12 +19,12 @@ mod disable_telemetry;
 mod launch;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::wuwa::config::Config;
+use anime_launcher_sdk::steamgame::config::Config;
 
-use anime_launcher_sdk::wuwa::config::schema::launcher::LauncherStyle;
+use anime_launcher_sdk::steamgame::config::schema::launcher::LauncherStyle;
 
-use anime_launcher_sdk::wuwa::states::*;
-use anime_launcher_sdk::wuwa::consts::*;
+use anime_launcher_sdk::steamgame::states::*;
+use anime_launcher_sdk::steamgame::consts::*;
 
 use crate::*;
 use crate::ui::components::*;
@@ -310,6 +310,7 @@ impl SimpleComponent for App {
                             set_visible: model.style == LauncherStyle::Modern,
 
                             gtk::Picture {
+                                // TODO: generic art here
                                 set_resource: Some(&format!("{APP_RESOURCE_PATH}/icons/hicolor/scalable/apps/{APP_ID}.png")),
                                 set_vexpand: true,
                                 set_content_fit: gtk::ContentFit::ScaleDown

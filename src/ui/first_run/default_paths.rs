@@ -12,7 +12,6 @@ pub struct DefaultPathsApp {
     progress_bar: AsyncController<ProgressBar>,
 
     show_additional: bool,
-    migrate_installation: bool,
     show_progress: bool,
 
     launcher: PathBuf,
@@ -210,11 +209,7 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                     set_spacing: 8,
 
                     gtk::Button {
-                        set_label: &if model.migrate_installation {
-                            tr!("migrate")
-                        } else {
-                            tr!("continue")
-                        },
+                        set_label: &tr!("continue"),
 
                         set_css_classes: &["suggested-action", "pill"],
 
@@ -222,16 +217,9 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                     },
 
                     gtk::Button {
-                        set_label: &if model.migrate_installation {
-                            tr!("close", { "form" = "noun" })
-                        } else {
-                            tr!("exit")
-                        },
+                        set_label: &tr!("exit"),
 
                         add_css_class: "pill",
-
-                        #[watch]
-                        set_visible: !model.migrate_installation,
 
                         connect_clicked => DefaultPathsAppMsg::Exit
                     }
@@ -267,7 +255,6 @@ impl SimpleAsyncComponent for DefaultPathsApp {
                 .detach(),
 
             show_additional: false,
-            migrate_installation: init,
             show_progress: false,
 
             launcher: LAUNCHER_FOLDER.to_path_buf(),
@@ -330,43 +317,7 @@ impl SimpleAsyncComponent for DefaultPathsApp {
 
                 match self.update_config() {
                     Ok(_) => {
-                        if self.migrate_installation {
-                            self.progress_bar.sender().send(ProgressBarMsg::SetVisible(true));
-
-                            self.show_progress = true;
-
-                            let folders = [
-                                (old_config.game.wine.builds, &self.runners),
-                                (old_config.game.wine.prefix, &self.prefix),
-                                (old_config.game.path.global, &self.game_global),
-                                (old_config.game.path.china,  &self.game_china),
-                                (old_config.components.path,  &self.components),
-                                // (old_config.patch.path,       &self.patch)
-                            ];
-
-                            #[allow(clippy::expect_fun_call)]
-                            for (i, (from, to)) in folders.iter().enumerate() {
-                                self.progress_bar.sender().send(ProgressBarMsg::UpdateCaption(Some(
-                                    from.to_str().map(|str| str.to_string()).unwrap_or_else(|| format!("{:?}", from))
-                                )));
-
-                                if &from != to && from.exists() {
-                                    move_files::move_files(from, to).expect(&format!("Failed to move folder: {:?} -> {:?}", from, to));
-                                }
-
-                                self.progress_bar.sender().send(ProgressBarMsg::UpdateProgress(i as u64 + 1, folders.len() as u64));
-                            }
-
-                            // Restart the app
-
-                            std::process::Command::new(std::env::current_exe().unwrap()).spawn().unwrap();
-
-                            relm4::main_application().quit();
-                        }
-
-                        else {
-                            sender.output(Self::Output::ScrollToFinish);
-                        }
+                        sender.output(Self::Output::ScrollToFinish);
                     }
 
                     Err(err) => {
@@ -379,14 +330,7 @@ impl SimpleAsyncComponent for DefaultPathsApp {
             }
 
             DefaultPathsAppMsg::Exit => {
-                if self.migrate_installation {
-                    // TODO: this shit should return message to general preferences component somehow to close MigrateInstallation window
-                    todo!();
-                }
-
-                else {
-                    relm4::main_application().quit();
-                }
+                relm4::main_application().quit();
             }
         }
     }

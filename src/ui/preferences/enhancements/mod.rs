@@ -9,7 +9,7 @@ use relm4::factory::{
 use adw::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::wuwa::config::Config;
+use anime_launcher_sdk::steamgame::config::Config;
 use anime_launcher_sdk::config::schema_blanks::prelude::*;
 
 use anime_launcher_sdk::anime_game_core::installer::downloader::Downloader;
@@ -438,6 +438,27 @@ impl SimpleAsyncComponent for EnhancementsApp {
                     }
                 },
 
+                adw::ActionRow {
+                    set_title: &tr!("kg-kr-browser"),
+                    set_subtitle: &tr!("kg-kr-browser-description"),
+
+                    add_suffix = &gtk::Switch {
+                        set_valign: gtk::Align::Center,
+
+                        set_active: CONFIG.game.enhancements.kg_kr_browser,
+
+                        connect_state_notify => |switch| {
+                            if is_ready() {
+                                if let Ok(mut config) = Config::get() {
+                                    config.game.enhancements.kg_kr_browser = switch.is_active();
+
+                                    Config::update(config);
+                                }
+                            }
+                        }
+                    }
+                },
+                
                 adw::ActionRow {
                     set_title: &tr!("obs-vkcapture"),
                     set_subtitle: &tr!("obs-vkcapture-description"),

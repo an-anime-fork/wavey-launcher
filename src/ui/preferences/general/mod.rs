@@ -6,21 +6,19 @@ use adw::prelude::*;
 use anime_launcher_sdk::wincompatlib::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::wuwa::config::Config;
-use anime_launcher_sdk::wuwa::config::schema::launcher::{LauncherStyle, LauncherBehavior};
+use anime_launcher_sdk::steamgame::config::Config;
+use anime_launcher_sdk::steamgame::config::schema::launcher::{LauncherStyle, LauncherBehavior};
 
 pub mod components;
 
 use components::*;
 
-use crate::ui::migrate_installation::MigrateInstallationApp;
 use crate::ui::preferences::main::PreferencesAppMsg;
 
 use crate::i18n::*;
 use crate::*;
 
 pub struct GeneralApp {
-    migrate_installation: Controller<MigrateInstallationApp>,
     components_page: AsyncController<ComponentsPage>,
 
     game_diff: Option<VersionDiff>,
@@ -42,7 +40,6 @@ pub enum GeneralAppMsg {
 
     UpdateDownloadedWine,
 
-    OpenMigrateInstallation,
     RepairGame,
 
     OpenMainPage,
@@ -186,145 +183,7 @@ impl SimpleAsyncComponent for GeneralApp {
                         }
                     }
                 },
-
-                /*
-                adw::ComboRow {
-                    set_title: &tr!("game-edition"),
-
-                    set_model: Some(&gtk::StringList::new(&[
-                        &tr!("global"),
-                        &tr!("china")
-                    ])),
-
-                    set_selected: GameEdition::list().iter()
-                        .position(|edition| edition == &CONFIG.launcher.edition)
-                        .unwrap() as u32,
-
-                    connect_selected_notify[sender] => move |row| {
-                        if is_ready() {
-                            #[allow(unused_must_use)]
-                            if let Ok(mut config) = Config::get() {
-                                config.launcher.edition = GameEdition::list()[row.selected() as usize];
-
-                                Config::update(config);
-
-                                sender.output(PreferencesAppMsg::UpdateLauncherState);
-                            }
-                        }
-                    }
-                },
-                */
-
-                /*
-                gtk::Box {
-                    set_orientation: gtk::Orientation::Horizontal,
-                    set_spacing: 8,
-                    set_margin_top: 16,
-
-                    gtk::Button {
-                        set_label: &tr!("migrate-installation"),
-                        set_tooltip_text: Some(&tr!("migrate-installation-description")),
-
-                        connect_clicked => GeneralAppMsg::OpenMigrateInstallation
-                    },
-
-                    gtk::Button {
-                        set_label: &tr!("repair-game"),
-
-                        connect_clicked => GeneralAppMsg::RepairGame
-                    }
-                }
-                */
             },
-
-            /*
-            add = &adw::PreferencesGroup {
-                set_title: &tr!("status"),
-
-                adw::ActionRow {
-                    set_title: &tr!("game-version"),
-
-                    add_suffix = &gtk::Label {
-                        #[watch]
-                        set_text: &match model.game_diff.as_ref() {
-                            Some(diff) => match diff {
-                                VersionDiff::Latest(current) |
-                                VersionDiff::Outdated { current, .. } => current.to_string(),
-
-                                VersionDiff::NotInstalled { .. } => tr!("game-not-installed")
-                            }
-
-                            None => String::from("?")
-                        },
-
-                        #[watch]
-                        set_css_classes: match model.game_diff.as_ref() {
-                            Some(diff) => match diff {
-                                VersionDiff::Latest { .. }       => &["success"],
-                                VersionDiff::Outdated { .. }     => &["error"],
-                                VersionDiff::NotInstalled { .. } => &[]
-                            }
-
-                            None => &[]
-                        },
-
-                        #[watch]
-                        set_tooltip_text: Some(&match model.game_diff.as_ref() {
-                            Some(diff) => match diff {
-                                VersionDiff::Latest { .. } => String::new(),
-
-                                VersionDiff::Outdated { latest, .. } => tr!("game-outdated", {
-                                    "latest" = latest.to_string()
-                                }),
-
-                                VersionDiff::NotInstalled { .. } => String::new()
-                            }
-
-                            None => String::new()
-                        })
-                    }
-                },
-
-                // adw::ActionRow {
-                //     set_title: &tr!("player-patch-version"),
-                //     set_subtitle: &tr!("player-patch-version-description"),
-                //
-                //     add_suffix = &gtk::Label {
-                //         #[watch]
-                //         set_text: &match model.main_patch.as_ref() {
-                //             Some((version, _)) => version.to_string(),
-                //             None => String::from("?")
-                //         },
-                //
-                //         #[watch]
-                //         set_css_classes: match model.main_patch.as_ref() {
-                //             Some((_, status)) => match status {
-                //                 JadeitePatchStatusVariant::Verified => &["success"],
-                //                 JadeitePatchStatusVariant::Unverified => &["warning"],
-                //                 JadeitePatchStatusVariant::Broken => &["error"],
-                //                 JadeitePatchStatusVariant::Unsafe => &["error"],
-                //                 JadeitePatchStatusVariant::Concerning => &["error"]
-                //             }
-                //
-                //             None => &[]
-                //         },
-                //
-                //         #[watch]
-                //         set_tooltip_text: Some(&match model.main_patch.as_ref() {
-                //             Some((_, status)) => match status {
-                //                 JadeitePatchStatusVariant::Unverified => tr!("patch-testing-tooltip"),
-                //                 JadeitePatchStatusVariant::Broken => tr!("patch-broken-tooltip"),
-                //                 JadeitePatchStatusVariant::Unsafe => tr!("patch-unsafe-tooltip"),
-                //                 JadeitePatchStatusVariant::Concerning => tr!("patch-concerning-tooltip"),
-                //
-                //                 _ => String::new()
-                //             }
-                //
-                //             None => String::new()
-                //         })
-                //     }
-                // }
-            },*/
 
             add = &adw::PreferencesGroup {
                 set_title: &tr!("options"),
@@ -448,10 +307,6 @@ impl SimpleAsyncComponent for GeneralApp {
         tracing::info!("Initializing general settings");
 
         let model = Self {
-            migrate_installation: MigrateInstallationApp::builder()
-                .launch(())
-                .detach(),
-
             components_page: ComponentsPage::builder()
                 .launch(())
                 .forward(sender.input_sender(), std::convert::identity),
@@ -488,14 +343,6 @@ impl SimpleAsyncComponent for GeneralApp {
                 self.components_page.sender()
                     .send(ComponentsPageMsg::UpdateDownloadedWine)
                     .unwrap();
-            }
-
-            GeneralAppMsg::OpenMigrateInstallation => unsafe {
-                if let Some(window) = crate::ui::main::PREFERENCES_WINDOW.as_ref() {
-                    self.migrate_installation.widget().set_transient_for(Some(window.widget()));
-                }
-
-                self.migrate_installation.widget().present();
             }
 
             GeneralAppMsg::RepairGame => {

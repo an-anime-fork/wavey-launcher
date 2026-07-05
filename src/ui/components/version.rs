@@ -10,7 +10,7 @@ use gtk::glib::clone;
 use anime_launcher_sdk::anime_game_core::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::wuwa::config::Config;
+use anime_launcher_sdk::steamgame::config::Config;
 
 use super::ComponentGroupMsg;
 use super::progress_bar::ProgressBarMsg;

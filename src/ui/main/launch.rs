@@ -6,16 +6,14 @@ use glob;
 use anime_launcher_sdk::wincompatlib::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::wuwa::config::Config;
-use anime_launcher_sdk::wuwa::config::schema::prelude::LauncherBehavior;
+use anime_launcher_sdk::steamgame::config::Config;
+use anime_launcher_sdk::steamgame::config::schema::prelude::LauncherBehavior;
 
 use crate::*;
 
 use super::{App, AppMsg};
 
-// TODO: decide if i watch the dir for creation of the file, the file for update, or both
-//       sometimes the debug.log is actually wiped off and re-created because there's no
-//       trace of previous pull histories.
+// Watch for the Creation of Client.log. It is ALWAYS renamed, then re-created.
 fn get_watch_target() -> Option<PathBuf> {
     //let target_watch = "debug.log";
     let target_watch = "KRSDKWebView";
@@ -85,7 +83,7 @@ pub fn launch(sender: ComponentSender<App>) {
         // I honestly don't care anymore
         let wine = config.get_selected_wine().unwrap().unwrap();
 
-        if let Err(err) = anime_launcher_sdk::wuwa::game::run() {
+        if let Err(err) = anime_launcher_sdk::steamgame::game::run() {
             tracing::error!("Failed to launch game: {err}");
 
             sender.input(AppMsg::Toast {

@@ -3,11 +3,11 @@ use relm4::prelude::*;
 use gtk::prelude::*;
 use adw::prelude::*;
 
-use anime_launcher_sdk::anime_game_core::wuwa::prelude::*;
+use anime_launcher_sdk::anime_game_core::steamgame::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::wuwa::config::Config;
-use anime_launcher_sdk::wuwa::config::schema::launcher::LauncherStyle;
+use anime_launcher_sdk::steamgame::config::Config;
+use anime_launcher_sdk::steamgame::config::schema::launcher::LauncherStyle;
 
 use crate::tr;
 

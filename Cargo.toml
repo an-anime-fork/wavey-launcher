@@ -19,19 +19,18 @@ glib-build-tools = "0.21"
 
 [dependencies.anime-launcher-sdk]
 git = "https://github.com/an-anime-fork/anime-launcher-sdk"
-branch = "feat/wuwa/steamified"
+tag = "feat/wuwa/steamified/latest"
 workspace = true
-features = [ "all", "wuwa", "steam" ] #, "wuwa-steam" ] # get a shield for wuwa-specific?
-
+features = [ "all", "steam", "piston" ] #, "wuwa-steam" ] # get a feature shield for wuwa-specific?
 # path = "../anime-launcher-sdk" # ! for dev purposes only
 
 [dependencies]
-relm4 = { version = "0.9.1", features = ["macros", "libadwaita"] }
-gtk = { package = "gtk4", version = "0.9.6", features = ["v4_16"] }
-adw = { package = "libadwaita", version = "0.7.2", features = ["v1_5"] }
+relm4 = { version = "0.9", features = ["macros", "libadwaita"] }
+gtk = { package = "gtk4", version = "0.9", features = ["v4_18"] }
+adw = { package = "libadwaita", version = "0.7", features = ["v1_7"] }
 
 rfd = { version = "0.15.4", features = ["xdg-portal", "tokio"], default-features = false }
-open = "5.3.2"
+open = "5.3.3"
 whatadistro = "0.1.0"
 
 serde_json = "1.0"
@@ -48,9 +47,12 @@ fluent-templates = "0.13"
 unic-langid = "0.9"
 
 human-panic = "2.0.3"
-microxdg = "0.2.0"
+microxdg = "0.2"
 
 ksni = { version = "0.3.1", features = ["blocking"] }
-image = "0.25.6"
+image = "0.25"
 notify = "8"
 glob = "0.3"
+
+# full screen experience
+gilrs = "0.11"

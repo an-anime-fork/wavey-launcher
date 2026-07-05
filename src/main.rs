@@ -7,13 +7,13 @@ use anime_launcher_sdk::integrations::steam;
 use relm4::prelude::*;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::wuwa::config::{Config, Schema};
+use anime_launcher_sdk::steamgame::config::{Config, Schema};
 
-use anime_launcher_sdk::wuwa::states::LauncherState;
-use anime_launcher_sdk::wuwa::consts::*;
+use anime_launcher_sdk::steamgame::states::LauncherState;
+use anime_launcher_sdk::steamgame::consts::*;
 
 use anime_launcher_sdk::anime_game_core::prelude::*;
-use anime_launcher_sdk::anime_game_core::wuwa::prelude::*;
+use anime_launcher_sdk::anime_game_core::steamgame::prelude::*;
 
 use tracing_subscriber::prelude::*;
 use tracing_subscriber::filter::*;
@@ -244,7 +244,7 @@ fn main() -> anyhow::Result<()> {
 
             match state {
                 LauncherState::Launch => {
-                    anime_launcher_sdk::wuwa::game::run().expect("Failed to run the game");
+                    anime_launcher_sdk::steamgame::game::run().expect("Failed to run the game");
 
                     return Ok(());
                 }
@@ -253,7 +253,7 @@ fn main() -> anyhow::Result<()> {
                 // LauncherState::PredownloadAvailable { .. } |
                 // LauncherState::PatchUpdateAvailable => {
                 //     if just_run_game {
-                //         anime_launcher_sdk::wuwa::game::run().expect("Failed to run the game");
+                //         anime_launcher_sdk::steamgame::game::run().expect("Failed to run the game");
                 //
                 //         return Ok(());
                 //     }

@@ -10,7 +10,7 @@ use anime_launcher_sdk::components::*;
 use anime_launcher_sdk::components::wine::UnifiedWine;
 
 use anime_launcher_sdk::config::ConfigExt;
-use anime_launcher_sdk::wuwa::config::Config;
+use anime_launcher_sdk::steamgame::config::Config;
 
 use super::main::FirstRunAppMsg;
 
